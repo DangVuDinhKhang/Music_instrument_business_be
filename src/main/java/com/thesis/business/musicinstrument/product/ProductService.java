@@ -3,6 +3,7 @@ package com.thesis.business.musicinstrument.product;
 import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
+import com.thesis.business.musicinstrument.category.CategoryService;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -15,20 +16,26 @@ public class ProductService {
     @Inject
     ProductRepository productRepository;
 
+    @Inject 
+    CategoryService categoryService;
+
     @Transactional
-    Long add(Product product) {
+    public Long add(Product product) {
+
+        if(categoryService.findById(product.getCategory().getId()) == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Category does not exist");
 
         productRepository.persist(product);
         return product.getId();
     }
 
-    List<Product> findAll() {
+    public List<Product> findAll() {
 
         return productRepository.listAll();
     }
 
     @Transactional
-    void updateById(Long id, Product product) {
+    public void updateById(Long id, Product product) {
 
         Product productInDB = productRepository.findById(id);
         if(productInDB == null)
@@ -42,7 +49,7 @@ public class ProductService {
     }
 
     @Transactional
-    void deleteById(Long id){
+    public void deleteById(Long id){
         
         if(productRepository.deleteById(id))
             return;

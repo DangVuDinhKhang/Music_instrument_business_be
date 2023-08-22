@@ -16,19 +16,19 @@ public class PaymentService {
     PaymentRepository paymentRepository;
 
     @Transactional
-    Long add(Payment payment) {
+    public Long add(Payment payment) {
 
         paymentRepository.persist(payment);
         return payment.getId();
     }
 
-    List<Payment> findAll() {
+    public List<Payment> findAll() {
 
         return paymentRepository.listAll();
     }
 
     @Transactional
-    void updateById(Long id, Payment payment) {
+    public void updateById(Long id, Payment payment) {
 
         Payment paymentInDB = paymentRepository.findById(id);
         if(paymentInDB == null)
@@ -39,7 +39,7 @@ public class PaymentService {
     }
 
     @Transactional
-    void deleteById(Long id){
+    public void deleteById(Long id){
         
         if(paymentRepository.deleteById(id))
             return;

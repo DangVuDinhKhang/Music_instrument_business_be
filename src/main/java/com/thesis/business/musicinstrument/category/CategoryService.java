@@ -16,19 +16,24 @@ public class CategoryService {
     CategoryRepository categoryRepository;
 
     @Transactional
-    Long add(Category category) {
+    public Long add(Category category) {
 
         categoryRepository.persist(category);
         return category.getId();
     }
 
-    List<Category> findAll() {
+    public List<Category> findAll() {
 
         return categoryRepository.listAll();
     }
+    
+
+    public Category findById(Long id){
+        return categoryRepository.findById(id);
+    }
 
     @Transactional
-    void updateById(Long id, Category category) {
+    public void updateById(Long id, Category category) {
 
         Category categoryInDB = categoryRepository.findById(id);
         if(categoryInDB == null)
@@ -39,7 +44,7 @@ public class CategoryService {
     }
 
     @Transactional
-    void deleteById(Long id){
+    public void deleteById(Long id){
         
         if(categoryRepository.deleteById(id))
             return;
