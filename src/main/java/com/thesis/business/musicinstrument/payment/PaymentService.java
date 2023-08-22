@@ -28,13 +28,13 @@ public class PaymentService {
     }
 
     @Transactional
-    void updateById(Long id, Payment category) {
+    void updateById(Long id, Payment payment) {
 
         Payment paymentInDB = paymentRepository.findById(id);
         if(paymentInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Payment does not exist");
 
-        paymentInDB.setName(category.getName());
+        paymentInDB.setName(payment.getName());
         paymentRepository.persist(paymentInDB);
     }
 
