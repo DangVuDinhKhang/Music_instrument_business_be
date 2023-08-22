@@ -58,7 +58,7 @@ public class AccountService {
         else
             accountInDB = accountRepository.find("id = ?1 and username = ?2", id, username).firstResult();
         if (accountInDB == null)
-            throw new MusicInstrumentException(Response.Status.FORBIDDEN, "Account does not exist");
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
         
         return accountInDB;
     }
