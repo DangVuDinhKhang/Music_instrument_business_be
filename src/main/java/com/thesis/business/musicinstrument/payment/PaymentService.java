@@ -27,6 +27,11 @@ public class PaymentService {
         return paymentRepository.listAll();
     }
 
+    public Payment findById(Long id){
+        
+        return paymentRepository.findById(id);
+    }
+
     @Transactional
     public void updateById(Long id, Payment payment) {
 
