@@ -34,6 +34,11 @@ public class ProductService {
         return productRepository.listAll();
     }
 
+    public Product findById(Long id){
+        
+        return productRepository.findById(id);
+    }
+
     @Transactional
     public void updateById(Long id, Product product) {
 

@@ -40,6 +40,11 @@ public class CustomerOrderService {
         return customerOrderRepository.listAll();
     }
 
+    public CustomerOrder findById(Long id){
+
+        return customerOrderRepository.findById(id);
+    }
+
     @Transactional
     public void updateById(Long id, CustomerOrder customerOrder) {
 

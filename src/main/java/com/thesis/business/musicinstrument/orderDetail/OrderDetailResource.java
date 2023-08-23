@@ -1,4 +1,4 @@
-package com.thesis.business.musicinstrument.order;
+package com.thesis.business.musicinstrument.orderDetail;
 
 import java.net.URI;
 import java.util.List;
@@ -18,13 +18,13 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 
-@Path("/order")
+@Path("/order-detail")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class CustomerOrderResource {
+public class OrderDetailResource {
 
     @Inject
-    CustomerOrderService customerOrderService;
+    OrderDetailService orderDetailService;
 
     @Inject
     JsonWebToken jwt;
@@ -35,27 +35,27 @@ public class CustomerOrderResource {
     @POST
     @Path("/")
     @RolesAllowed({"admin", "member"})
-    public Response add(CustomerOrder customerOrder) {
+    public Response add(OrderDetail orderDetail) {
 
-        Long customerOrderId = customerOrderService.add(customerOrder, jwt.getName(), jwt.getGroups().stream().findFirst().orElse(null));
-        URI location = this.uriInfo.getAbsolutePathBuilder().path(String.valueOf(customerOrderId)).build();
+        Long orderDetailId = orderDetailService.add(orderDetail);
+        URI location = this.uriInfo.getAbsolutePathBuilder().path(String.valueOf(orderDetailId)).build();
         return Response.status(Response.Status.CREATED).location(location).build();
     }
 
     @GET
-    @Path("/")
-    public Response findAll() {
-
-        List<CustomerOrder> customerOrders = customerOrderService.findAll();
-        return Response.status(Response.Status.OK).entity(customerOrders).build();
+    @Path("/{orderId}")
+    public Response findByOrderId(@PathParam("orderId") Long orderId){
+        
+        List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderId);
+        return Response.status(Response.Status.OK).entity(orderDetails).build();
     }
 
     @DELETE
     @Path("/{id}")
     @RolesAllowed("admin")
-    public Response deleteById(@PathParam("id") Long id) {
+    public Response deleteById(@PathParam("id") Long id){
 
-        customerOrderService.deleteById(id);
+        orderDetailService.deleteById(id);
 
         return Response.status(Response.Status.OK).build();
     }
