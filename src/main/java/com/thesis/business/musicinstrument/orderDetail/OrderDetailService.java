@@ -3,6 +3,7 @@ package com.thesis.business.musicinstrument.orderDetail;
 import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
+import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.order.CustomerOrderService;
 import com.thesis.business.musicinstrument.product.ProductService;
 
@@ -41,9 +42,25 @@ public class OrderDetailService {
         if(orderDetails.isEmpty())
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
         return orderDetails;
+    }   
+
+    public OrderDetail findByProductIdAndListOfOrder(Long productId, List<CustomerOrder> customerOrders){
+
+        // List<OrderDetail> orderDetails = orderDetailRepository.list("product.id", productId);
+        // if(orderDetails.isEmpty())
+        //     throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
+        // return orderDetails;
+
+        OrderDetail orderDetails;
+        for(CustomerOrder customerOrder : customerOrders){
+            orderDetails = orderDetailRepository.find("product.id = ?1 and customerOrder.id = ?2", productId, customerOrder.getId()).firstResult();
+            if(orderDetails != null)
+                return orderDetails;
+        }
+        return null;
+
     }
     
-
     public OrderDetail findById(Long id){
         return orderDetailRepository.findById(id);
     }

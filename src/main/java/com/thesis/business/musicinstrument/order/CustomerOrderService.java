@@ -45,6 +45,11 @@ public class CustomerOrderService {
         return customerOrderRepository.findById(id);
     }
 
+    public List<CustomerOrder> findByAccountId(Long accountId){
+        
+        return customerOrderRepository.list("account.id", accountId);
+    }
+
     @Transactional
     public void updateById(Long id, CustomerOrder customerOrder) {
 
