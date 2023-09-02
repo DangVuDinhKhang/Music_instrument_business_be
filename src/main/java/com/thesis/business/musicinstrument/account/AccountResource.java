@@ -1,5 +1,9 @@
 package com.thesis.business.musicinstrument.account;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -31,15 +35,16 @@ public class AccountResource {
     @POST
     @Path("/register")
     public Response register(Account account) {
-        accountService.register(account);
-        return Response.status(Response.Status.CREATED).build();
+        AccountDTO accountDTO = accountService.register(account);
+        return Response.status(Response.Status.CREATED).entity(accountDTO).build();
     }
 
     @POST
     @Path("/login")
     public Response login(Account account) {
-        String token = accountService.login(account);
-        return Response.ok(token).build();
+        AccountDTO accountDTO = accountService.login(account);
+        
+        return Response.status(Response.Status.OK).entity(accountDTO).build();
     }
 
     

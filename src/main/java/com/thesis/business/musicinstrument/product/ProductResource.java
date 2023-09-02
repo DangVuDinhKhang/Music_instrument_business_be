@@ -51,6 +51,15 @@ public class ProductResource {
         return Response.status(Response.Status.OK).entity(products).build();
     }
 
+    @GET
+    @Path("/{id}")
+    public Response findById(@PathParam("id") Long id){
+
+        Product product = productService.findById(id);
+
+        return Response.status(Response.Status.OK).entity(product).build();
+    }
+
     @PUT
     @Path("/{id}")
     @RolesAllowed("admin")

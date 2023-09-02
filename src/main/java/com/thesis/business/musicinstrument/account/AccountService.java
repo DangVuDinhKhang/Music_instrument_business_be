@@ -22,7 +22,7 @@ public class AccountService {
     AuthService authService;
 
     @Transactional
-    public void register(Account account) {
+    public AccountDTO register(Account account) {
 
         String hashedPassword = BCrypt.hashpw(account.getPassword(), BCrypt.gensalt());
         account.setPassword(hashedPassword);
@@ -31,17 +31,21 @@ public class AccountService {
         this.validateExistedUsername(account);
 
         accountRepository.persist(account);
+        String token = authService.generateJWTToken(account.getUsername(), account.getRole());
+        return this.convertToDTO(account, token);
 
     }
 
-    public String login(Account account) {
+    public AccountDTO login(Account account) {
 
         Account accountInDB = accountRepository.find("username", account.getUsername()).firstResult();
 
-        if (accountInDB != null && BCrypt.checkpw(account.getPassword(), accountInDB.getPassword()))
-            return authService.generateJWTToken(accountInDB.getUsername(), accountInDB.getRole());
+        if (accountInDB != null && BCrypt.checkpw(account.getPassword(), accountInDB.getPassword())){
+            String token = authService.generateJWTToken(accountInDB.getUsername(), accountInDB.getRole());
+            return this.convertToDTO(accountInDB, token);
+        }
         else
-            throw new MusicInstrumentException(Response.Status.UNAUTHORIZED, "Wrong username or password");
+            throw new MusicInstrumentException(Response.Status.UNAUTHORIZED, "Sai tên đăng nhập hoặc mật khẩu");
 
     }
 
@@ -98,6 +102,18 @@ public class AccountService {
         Account accountInDB = accountRepository.find("username", account.getUsername()).firstResult();
         if (accountInDB != null)
             throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "This username has been used");
+    }
+
+    private AccountDTO convertToDTO(Account account, String token){
+        
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setId(account.getId());
+        accountDTO.setUsername(account.getUsername());
+        accountDTO.setAddress(account.getAddress());
+        accountDTO.setPhone(account.getPhone());
+        accountDTO.setRole(account.getRole());
+        accountDTO.setToken(token);
+        return accountDTO;
     }
 
 }
