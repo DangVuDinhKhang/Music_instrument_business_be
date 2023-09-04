@@ -1,15 +1,20 @@
 package com.thesis.business.musicinstrument.product;
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
+import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
@@ -18,6 +23,11 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
 @Path("product")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -36,9 +46,9 @@ public class ProductResource {
     @POST
     @Path("/")
     @RolesAllowed("admin")
-    public Response add(Product product) {
-
-        Long productId = productService.add(product);
+    @Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+    public Response add(@MultipartForm MultipartFormDataInput input){
+        Long productId = productService.add(input);
         URI location = this.uriInfo.getAbsolutePathBuilder().path(String.valueOf(productId)).build();
         return Response.status(Response.Status.CREATED).location(location).build();
     }
@@ -63,10 +73,9 @@ public class ProductResource {
     @PUT
     @Path("/{id}")
     @RolesAllowed("admin")
-    public Response updateById(@PathParam("id") Long id, Product product){
-
-        productService.updateById(id, product);
-
+    @Consumes({MediaType.MULTIPART_FORM_DATA, MediaType.APPLICATION_JSON})
+    public Response updateById(@PathParam("id") Long id, @MultipartForm MultipartFormDataInput input){
+        productService.updateById(id, input);
         return Response.status(Response.Status.OK).build();
     }
 

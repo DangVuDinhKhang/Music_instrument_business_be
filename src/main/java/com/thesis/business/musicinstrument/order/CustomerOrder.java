@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import com.thesis.business.musicinstrument.account.Account;
 import com.thesis.business.musicinstrument.payment.Payment;
 
-import jakarta.json.bind.annotation.JsonbDateFormat;
+//import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,7 +31,7 @@ public class CustomerOrder {
     private String name;
 
     @Column(name = "date")
-    @JsonbDateFormat(value = "dd-MM-yyyy")
+    //@JsonbDateFormat(value = "dd-MM-yyyy")
     private LocalDate date;
 
     @Column(name = "total")
