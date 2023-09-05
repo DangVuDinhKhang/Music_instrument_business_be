@@ -1,13 +1,18 @@
 package com.thesis.business.musicinstrument.product;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
+import com.thesis.business.musicinstrument.cart.Cart;
+import com.thesis.business.musicinstrument.cart.CartService;
 import com.thesis.business.musicinstrument.category.Category;
 import com.thesis.business.musicinstrument.category.CategoryService;
 import com.thesis.business.musicinstrument.image.ImageService;
@@ -29,6 +34,12 @@ public class ProductService {
 
     @Inject 
     ImageService imageService;
+
+    @Inject
+    CartService cartService;
+
+    @Inject 
+    ProductService productService;
 
     @Transactional
     public Long add(MultipartFormDataInput input) {
@@ -101,31 +112,28 @@ public class ProductService {
         return product.getId();
     }
 
+    // public List<ProductDTO> findAll() {
+
+    //     List<Product> products =  productRepository.listAll();
+    //     List<ProductDTO> productDTOs = new ArrayList<>();
+    //     for (Product product : products) {
+    //         productDTOs.add(this.convertToDTO(product));
+    //     }
+    //     return productDTOs;
+    // }
+
     public List<Product> findAll() {
 
         return productRepository.listAll();
     }
 
     public Product findById(Long id){
-        
-        return productRepository.findById(id);
+
+        Product product = productRepository.findById(id);
+        if(product == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
+        return product;
     }
-
-    // @Transactional
-    // public void updateById(Long id, Product product) {
-
-    //     Product productInDB = productRepository.findById(id);
-    //     if(productInDB == null)
-    //         throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
-
-    //     productInDB.setName(product.getName());
-    //     productInDB.setDescription(product.getDescription());
-    //     productInDB.setPrice(product.getPrice());
-    //     if(product.getAmount() != null)
-    //         productInDB.setAmount(product.getAmount());
-    //     productInDB.setCategory(product.getCategory());
-    //     productRepository.persist(productInDB);
-    // }
 
     @Transactional
     public void updateById(Long id, MultipartFormDataInput input) {
@@ -218,5 +226,52 @@ public class ProductService {
         else
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
     }
+
+    @Transactional
+    public void addToCart(Long productId, Long cartId){
+        
+        Product product = productService.findById(productId);
+        Cart cart = cartService.findById(cartId);
+
+        cart.getProducts().add(product);
+        product.getCarts().add(cart);
+
+        cart.calculateAmount();
+        cartService.update(cart);
+
+    }
+
+    public List<Product> findByCartId(Long cartId){
+        return productRepository.find("SELECT p FROM Product p JOIN p.carts c WHERE c.id = ?1", cartId).list();
+    }
+
+    public long countByCartId(Long cartId){
+        return productRepository.count("SELECT p FROM Product p JOIN p.carts c WHERE c.id = ?1", cartId);
+    }
+
+    // private ProductDTO convertToDTO(Product product){
+
+    //     ProductDTO productDTO = new ProductDTO();
+    //     productDTO.setId(product.getId());
+    //     productDTO.setName(product.getName());
+    //     productDTO.setDescription(product.getDescription());
+    //     productDTO.setPrice(product.getPrice());
+    //     productDTO.setAmount(product.getAmount());
+    //     productDTO.setCategory(product.getCategory());
+    //     return productDTO;
+
+    // }
+
+    // private Product convertToEntity(ProductDTO productDTO){
+
+    //     Product product = new Product();
+    //     product.setId(productDTO.getId());
+    //     product.setName(productDTO.getName());
+    //     product.setDescription(productDTO.getDescription());
+    //     product.setPrice(productDTO.getPrice());
+    //     product.setAmount(productDTO.getAmount());
+    //     product.setCategory(productDTO.getCategory());
+    //     return product;
+    // }
 
 }

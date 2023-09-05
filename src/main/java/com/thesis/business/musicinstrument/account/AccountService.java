@@ -2,6 +2,8 @@ package com.thesis.business.musicinstrument.account;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.auth.AuthService;
+import com.thesis.business.musicinstrument.cart.Cart;
+import com.thesis.business.musicinstrument.cart.CartService;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -21,6 +23,9 @@ public class AccountService {
     @Inject
     AuthService authService;
 
+    @Inject
+    CartService cartService;
+
     @Transactional
     public AccountDTO register(Account account) {
 
@@ -32,6 +37,8 @@ public class AccountService {
 
         accountRepository.persist(account);
         String token = authService.generateJWTToken(account.getUsername(), account.getRole());
+        cartService.add(account);
+
         return this.convertToDTO(account, token);
 
     }
@@ -91,6 +98,10 @@ public class AccountService {
 
     @Transactional
     public void deleteById(Long id){
+
+        Cart cart = cartService.findByAccountId(id);
+        cartService.deleteByID(cart.getId());
+        
         if(accountRepository.deleteById(id))
             return;
         else

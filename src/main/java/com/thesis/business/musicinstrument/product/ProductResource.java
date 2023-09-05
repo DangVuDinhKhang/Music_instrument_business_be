@@ -61,6 +61,21 @@ public class ProductResource {
         return Response.status(Response.Status.OK).entity(products).build();
     }
 
+    @POST
+    @Path("/add-to-cart")
+    public Response addToCart(AddToCartRequest addToCartRequest){
+        productService.addToCart(addToCartRequest.getProductId(), addToCartRequest.getCartId());
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @GET
+    @Path("/cart/{id}")
+    public Response findByCartId(@PathParam("id") Long cartId){
+
+        List<Product> products = productService.findByCartId(cartId);
+        return Response.status(Response.Status.OK).entity(products).build();
+    }
+
     @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id){
@@ -88,4 +103,6 @@ public class ProductResource {
 
         return Response.status(Response.Status.OK).build();
     }
+
+    
 }
