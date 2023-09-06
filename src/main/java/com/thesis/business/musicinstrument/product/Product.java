@@ -41,22 +41,22 @@ public class Product {
     @Column(name = "price")
     private Integer price;
 
-    @Column(name = "amount")
-    private Integer amount;
+    @Column(name = "quantity")
+    private Integer quantity;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany(mappedBy = "products")
-    @JsonbTransient
-    private Set<Cart> carts;
+    //@ManyToMany(mappedBy = "products")
+    //@JsonbTransient
+    //private Set<Cart> carts;
 
-    public Product(String name, String description, Integer price, Integer amount, Category category){
+    public Product(String name, String description, Integer price, Integer quantity, Category category){
         this.name = name;
         this.description = description;
         this.price = price;
-        this.amount = amount;
+        this.quantity = quantity;
         this.category = category;
     }
 

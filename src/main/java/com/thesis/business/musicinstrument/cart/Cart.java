@@ -34,32 +34,29 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(name="amount")
-    private Integer amount;
 
     @ManyToOne
     @JoinColumn(name = "account_id")
     private Account account;
 
-    @ManyToMany
-    @JoinTable(
-        name = "cart_product",
-        joinColumns = @JoinColumn(name = "cart_id"),
-        inverseJoinColumns = @JoinColumn(name = "product_id")
-    )
-    @JsonbTransient
-    private Set<Product> products;
+    // @ManyToMany
+    // @JoinTable(
+    //     name = "cart_product",
+    //     joinColumns = @JoinColumn(name = "cart_id"),
+    //     inverseJoinColumns = @JoinColumn(name = "product_id")
+    // )
+    // @JsonbTransient
+    // private Set<Product> products;
 
-    public void calculateAmount() {
-        if (products != null && !products.isEmpty()) {
-            int totalAmount = products.size();
-            this.amount = totalAmount;
-        } 
-        else {
-            this.amount = 0;
-        }
-    }
+    // public void calculateAmount() {
+    //     if (products != null && !products.isEmpty()) {
+    //         int totalAmount = products.size();
+    //         this.amount = totalAmount;
+    //     } 
+    //     else {
+    //         this.amount = 0;
+    //     }
+    // }
 
     
 

@@ -72,7 +72,7 @@ public class ProductResource {
     @Path("/cart/{id}")
     public Response findByCartId(@PathParam("id") Long cartId){
 
-        List<Product> products = productService.findByCartId(cartId);
+        List<ProductInCartDTO> products = productService.findByCartId(cartId);
         return Response.status(Response.Status.OK).entity(products).build();
     }
 

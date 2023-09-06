@@ -27,7 +27,6 @@ public class CartService {
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
 
         Cart cart = new Cart();
-        cart.setAmount(0);
         cart.setAccount(account);
         
         cartRepository.persist(cart);

@@ -13,6 +13,8 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.cart.Cart;
 import com.thesis.business.musicinstrument.cart.CartService;
+import com.thesis.business.musicinstrument.cart_product.CartProduct;
+import com.thesis.business.musicinstrument.cart_product.CartProductService;
 import com.thesis.business.musicinstrument.category.Category;
 import com.thesis.business.musicinstrument.category.CategoryService;
 import com.thesis.business.musicinstrument.image.ImageService;
@@ -40,6 +42,9 @@ public class ProductService {
 
     @Inject 
     ProductService productService;
+
+    @Inject
+    CartProductService cartProductService;
 
     @Transactional
     public Long add(MultipartFormDataInput input) {
@@ -104,7 +109,7 @@ public class ProductService {
         Product product = new Product(name, description, price, amount, category);
         if(categoryService.findById(product.getCategory().getId()) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Category does not exist");
-        product.setAmount(0);
+        product.setQuantity(0);
         productRepository.persist(product);
 
         if(uploadForm.containsKey("file"))
@@ -209,7 +214,7 @@ public class ProductService {
         if(price != -1)
             productInDB.setPrice(price);
         if(amount != 0)
-            productInDB.setAmount(amount);
+            productInDB.setQuantity(amount);
         if(checkCategory)
             productInDB.setCategory(category);
         if(uploadForm.containsKey("file"))
@@ -227,27 +232,19 @@ public class ProductService {
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
     }
 
+    public List<ProductInCartDTO> findByCartId(Long cartId){
+        return cartProductService.findProductsByCartId(cartId);
+    }
+
+    // public long countByCartId(Long cartId){
+    //     return productRepository.count("SELECT cp.product FROM CartProduct cp WHERE cp.cart.id = :cartId", cartId);
+    // }
+
     @Transactional
     public void addToCart(Long productId, Long cartId){
-        
-        Product product = productService.findById(productId);
-        Cart cart = cartService.findById(cartId);
-
-        cart.getProducts().add(product);
-        product.getCarts().add(cart);
-
-        cart.calculateAmount();
-        cartService.update(cart);
-
+        cartProductService.addProductToCart(productId, cartId);
     }
 
-    public List<Product> findByCartId(Long cartId){
-        return productRepository.find("SELECT p FROM Product p JOIN p.carts c WHERE c.id = ?1", cartId).list();
-    }
-
-    public long countByCartId(Long cartId){
-        return productRepository.count("SELECT p FROM Product p JOIN p.carts c WHERE c.id = ?1", cartId);
-    }
 
     // private ProductDTO convertToDTO(Product product){
 
