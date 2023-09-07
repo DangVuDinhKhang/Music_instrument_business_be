@@ -236,14 +236,25 @@ public class ProductService {
         return cartProductService.findProductsByCartId(cartId);
     }
 
-    // public long countByCartId(Long cartId){
-    //     return productRepository.count("SELECT cp.product FROM CartProduct cp WHERE cp.cart.id = :cartId", cartId);
-    // }
-
     @Transactional
     public void addToCart(Long productId, Long cartId){
         cartProductService.addProductToCart(productId, cartId);
     }
+
+    @Transactional
+    public void updateInCart(Long productId, Long cartId){
+        cartProductService.updateProductInCart(productId, cartId);
+    }
+
+    @Transactional
+    public void removeFromCart(Long productId, Long cartId){
+        cartProductService.removeProductFromCart(productId, cartId);
+    }
+
+    // @Transactional
+    // public void updateInCart(Long productId, Long cartId, Integer quantity){
+    //     cartProductService.updateProductInCart(productId, cartId, quantity);
+    // }
 
 
     // private ProductDTO convertToDTO(Product product){

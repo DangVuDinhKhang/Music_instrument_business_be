@@ -61,12 +61,33 @@ public class ProductResource {
         return Response.status(Response.Status.OK).entity(products).build();
     }
 
-    @POST
-    @Path("/add-to-cart")
+    @PUT
+    @Path("/add-to-cart/")
     public Response addToCart(AddToCartRequest addToCartRequest){
         productService.addToCart(addToCartRequest.getProductId(), addToCartRequest.getCartId());
         return Response.status(Response.Status.OK).build();
     }
+
+    @PUT
+    @Path("/update-in-cart/")
+    public Response updateInCart(AddToCartRequest addToCartRequest){
+        productService.updateInCart(addToCartRequest.getProductId(), addToCartRequest.getCartId());
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @DELETE
+    @Path("/remove-from-cart/{productId}/{cartId}")
+    public Response removeFromCart(@PathParam("productId") Long productId, @PathParam("cartId") Long cartId){
+        productService.removeFromCart(productId, cartId);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    // @POST
+    // @Path("/add-to-cart/{quantity}")
+    // public Response updateInCart(@PathParam("quantity") Integer quantity, AddToCartRequest addToCartRequest){
+    //     productService.updateInCart(addToCartRequest.getProductId(), addToCartRequest.getCartId(), quantity);
+    //     return Response.status(Response.Status.OK).build();
+    // }
 
     @GET
     @Path("/cart/{id}")

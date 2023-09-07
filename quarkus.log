@@ -1,3 +1,0 @@
-2023-09-06 23:11:20,581 laptop-p3hp7of8 musical-instrument-dev.jar[744] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.2.4.Final) started in 3.654s. Listening on: http://localhost:8080
-2023-09-06 23:11:20,585 laptop-p3hp7of8 musical-instrument-dev.jar[744] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2023-09-06 23:11:20,587 laptop-p3hp7of8 musical-instrument-dev.jar[744] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, reactive-routes, rest-client, resteasy, resteasy-jsonb, resteasy-multipart, security, smallrye-context-propagation, smallrye-jwt, vertx]

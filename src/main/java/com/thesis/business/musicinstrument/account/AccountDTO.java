@@ -1,5 +1,7 @@
 package com.thesis.business.musicinstrument.account;
 
+import com.thesis.business.musicinstrument.cart.Cart;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,4 +22,6 @@ public class AccountDTO {
     private String role;
 
     private String token;
+
+    private Cart cart;
 }

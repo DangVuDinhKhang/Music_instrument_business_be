@@ -37,9 +37,9 @@ public class AccountService {
 
         accountRepository.persist(account);
         String token = authService.generateJWTToken(account.getUsername(), account.getRole());
-        cartService.add(account);
+        Cart cart = cartService.add(account);
 
-        return this.convertToDTO(account, token);
+        return this.convertToDTO(account, cart, token);
 
     }
 
@@ -49,7 +49,8 @@ public class AccountService {
 
         if (accountInDB != null && BCrypt.checkpw(account.getPassword(), accountInDB.getPassword())){
             String token = authService.generateJWTToken(accountInDB.getUsername(), accountInDB.getRole());
-            return this.convertToDTO(accountInDB, token);
+            Cart cart = cartService.findByAccountId(accountInDB.getId());
+            return this.convertToDTO(accountInDB, cart, token);
         }
         else
             throw new MusicInstrumentException(Response.Status.UNAUTHORIZED, "Sai tên đăng nhập hoặc mật khẩu");
@@ -115,7 +116,7 @@ public class AccountService {
             throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "This username has been used");
     }
 
-    private AccountDTO convertToDTO(Account account, String token){
+    private AccountDTO convertToDTO(Account account, Cart cart, String token){
         
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setId(account.getId());
@@ -123,6 +124,7 @@ public class AccountService {
         accountDTO.setAddress(account.getAddress());
         accountDTO.setPhone(account.getPhone());
         accountDTO.setRole(account.getRole());
+        accountDTO.setCart(cart);
         accountDTO.setToken(token);
         return accountDTO;
     }
