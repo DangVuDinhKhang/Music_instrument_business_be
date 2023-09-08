@@ -1,10 +1,14 @@
 package com.thesis.business.musicinstrument.order;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.account.AccountService;
+import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
+import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 import com.thesis.business.musicinstrument.payment.PaymentService;
+import com.thesis.business.musicinstrument.product.Product;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -23,15 +27,40 @@ public class CustomerOrderService {
     @Inject
     PaymentService paymentService;
 
-    @Transactional
-    public Long add(CustomerOrder customerOrder, String username, String role) {
+    @Inject
+    OrderDetailService orderDetailService;
 
-        if(accountService.findById(customerOrder.getAccount().getId(), username, role) == null)
+    @Transactional
+    public Long add(CustomerOrderRequest customerOrderRequest, String username, String role) {
+
+        if(accountService.findById(customerOrderRequest.getAccount().getId(), username, role) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
-        if(paymentService.findById(customerOrder.getPayment().getId()) == null)
+        if(paymentService.findById(customerOrderRequest.getPayment().getId()) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Payment method does not exist");
+        
+        CustomerOrder customerOrder = new CustomerOrder();
+        customerOrder.setPhone(customerOrderRequest.getPhone());
+        customerOrder.setAddress(customerOrderRequest.getAddress());
+        customerOrder.setDate(LocalDate.now());
+        customerOrder.setTotal(customerOrderRequest.getTotal());
+        customerOrder.setAccount(customerOrderRequest.getAccount());
+        customerOrder.setPayment(customerOrderRequest.getPayment());
+        customerOrder.setStatus(false);
 
         customerOrderRepository.persist(customerOrder);
+
+        for(int i = 0; i < customerOrderRequest.getProductsInCartDTO().size(); i++){
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setProduct(new Product(customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getId()));
+            orderDetail.setAmount(customerOrderRequest.getProductsInCartDTO().get(i).getQuantity());
+            orderDetail.setTotal(
+                (long)customerOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
+                (long)customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()
+            );
+            orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
+            orderDetailService.add(orderDetail);
+        }
+            
         return customerOrder.getId();
     }
 
@@ -51,13 +80,14 @@ public class CustomerOrderService {
     }
 
     @Transactional
-    public void updateById(Long id, CustomerOrder customerOrder) {
+    public void updateById(Long id, Boolean status) {
+
 
         CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
         if(customerOrderInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
 
-        customerOrderInDB.setName(customerOrderInDB.getName());
+        customerOrderInDB.setStatus(status);
         customerOrderRepository.persist(customerOrderInDB);
     }
 

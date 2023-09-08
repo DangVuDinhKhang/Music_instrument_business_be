@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import com.thesis.business.musicinstrument.account.Account;
 import com.thesis.business.musicinstrument.payment.Payment;
 
+import jakarta.json.bind.annotation.JsonbDateFormat;
 //import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -27,15 +28,20 @@ public class CustomerOrder {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name", length = 50)
-    private String name;
-
     @Column(name = "date")
-    //@JsonbDateFormat(value = "dd-MM-yyyy")
+    @JsonbDateFormat(value = "dd-MM-yyyy")
     private LocalDate date;
 
     @Column(name = "total")
     private Long total;
+
+    @Column(name = "phone")
+    private String phone;
+
+    @Column(name = "address")
+    private String address;
+
+    private Boolean status;
 
     @ManyToOne
     @JoinColumn(name = "payment_id")
@@ -45,4 +51,7 @@ public class CustomerOrder {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    public CustomerOrder(Long id){
+        this.id = id;
+    }
 }

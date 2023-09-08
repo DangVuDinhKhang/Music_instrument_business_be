@@ -52,6 +52,10 @@ public class Product {
     //@JsonbTransient
     //private Set<Cart> carts;
 
+    public Product(Long id){
+        this.id = id;
+    }
+
     public Product(String name, String description, Integer price, Integer quantity, Category category){
         this.name = name;
         this.description = description;

@@ -11,6 +11,7 @@ import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -35,19 +36,37 @@ public class CustomerOrderResource {
     @POST
     @Path("/")
     @RolesAllowed({"admin", "member"})
-    public Response add(CustomerOrder customerOrder) {
+    public Response add(CustomerOrderRequest customerOrderRequest) {
 
-        Long customerOrderId = customerOrderService.add(customerOrder, jwt.getName(), jwt.getGroups().stream().findFirst().orElse(null));
+        Long customerOrderId = customerOrderService.add(customerOrderRequest, jwt.getName(), jwt.getGroups().stream().findFirst().orElse(null));
         URI location = this.uriInfo.getAbsolutePathBuilder().path(String.valueOf(customerOrderId)).build();
         return Response.status(Response.Status.CREATED).location(location).build();
     }
 
     @GET
     @Path("/")
+    @RolesAllowed("admin")
     public Response findAll() {
 
         List<CustomerOrder> customerOrders = customerOrderService.findAll();
         return Response.status(Response.Status.OK).entity(customerOrders).build();
+    }
+
+    @GET
+    @Path("/account/{id}")
+    //@RolesAllowed({"admin", "member"})
+    public Response findByAccountId(@PathParam("id") Long accountId) {
+
+        List<CustomerOrder> customerOrders = customerOrderService.findByAccountId(accountId);
+        return Response.status(Response.Status.OK).entity(customerOrders).build();
+    }
+
+    @PUT
+    @Path("/{id}")
+    @RolesAllowed("admin")
+    public Response updateById(@PathParam("id") Long id, UpdateCustomerOrderRequest updateCustomerOrderRequest){
+        customerOrderService.updateById(id, updateCustomerOrderRequest.getStatus());
+        return Response.status(Response.Status.OK).build();
     }
 
     @DELETE
