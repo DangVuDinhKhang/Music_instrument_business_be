@@ -52,7 +52,7 @@ public class CustomerOrderService {
         for(int i = 0; i < customerOrderRequest.getProductsInCartDTO().size(); i++){
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setProduct(new Product(customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getId()));
-            orderDetail.setAmount(customerOrderRequest.getProductsInCartDTO().get(i).getQuantity());
+            orderDetail.setQuantity(customerOrderRequest.getProductsInCartDTO().get(i).getQuantity());
             orderDetail.setTotal(
                 (long)customerOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
                 (long)customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()

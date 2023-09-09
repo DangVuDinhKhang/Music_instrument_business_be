@@ -72,7 +72,7 @@ public class OrderDetailService {
         if(orderDetailInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Detail of order does not exist");
 
-        orderDetailInDB.setAmount(orderDetail.getAmount());
+        orderDetailInDB.setQuantity(orderDetail.getQuantity());
         orderDetailInDB.setTotal(orderDetail.getTotal());
         orderDetailRepository.persist(orderDetailInDB);
     }
