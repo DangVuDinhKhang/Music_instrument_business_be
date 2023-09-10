@@ -1,5 +1,6 @@
-2023-09-09 20:02:41,629 laptop-p3hp7of8 musical-instrument-dev.jar[12116] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.2.4.Final) started in 4.446s. Listening on: http://localhost:8080
-2023-09-09 20:02:41,634 laptop-p3hp7of8 musical-instrument-dev.jar[12116] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2023-09-09 20:02:41,635 laptop-p3hp7of8 musical-instrument-dev.jar[12116] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, reactive-routes, rest-client, resteasy, resteasy-jsonb, resteasy-multipart, security, smallrye-context-propagation, smallrye-jwt, vertx]
-2023-09-09 22:53:03,609 laptop-p3hp7of8 musical-instrument-dev.jar[12116] WARNING [org.aes.rea.ter.imp.AbstractWindowsTerminal] (Quarkus Main Thread) Failed to write out.
-2023-09-09 22:53:03,597 laptop-p3hp7of8 musical-instrument-dev.jar[12116] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument stopped in 0.132s
+2023-09-10 21:12:18,888 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.2.4.Final) started in 0.605s. Listening on: http://localhost:8080
+2023-09-10 21:12:18,890 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2023-09-10 21:12:18,892 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, reactive-routes, rest-client, resteasy, resteasy-jsonb, resteasy-multipart, security, smallrye-context-propagation, smallrye-jwt, vertx]
+2023-09-10 21:12:18,893 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 1.165s 
+2023-09-10 22:01:38,499 laptop-p3hp7of8 musical-instrument-dev.jar[19984] WARNING [org.aes.rea.ter.imp.AbstractWindowsTerminal] (Shutdown thread) Failed to write out.
+2023-09-10 22:01:38,493 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Shutdown thread) musical-instrument stopped in 0.035s

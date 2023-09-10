@@ -54,6 +54,14 @@ public class RatingService {
 
         return ratingRepository.list("product.id", productId);
     }
+
+    public List<Rating> findByAccountId(Long accountId, String username, String role) {
+
+        if(accountService.findById(accountId, username, role) == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
+
+        return ratingRepository.list("account.id", accountId);
+    }
     
 
     public Rating findById(Long id){

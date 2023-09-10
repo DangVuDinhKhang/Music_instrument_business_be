@@ -42,10 +42,19 @@ public class RatingResource {
     }
 
     @GET
-    @Path("/{productId}")
-    public Response findByProductId(@PathParam("productId") Long productId){
+    @Path("/product/{id}")
+    public Response findByProductId(@PathParam("id") Long productId){
         
         List<Rating> ratings = ratingService.findByProductId(productId);
+        return Response.status(Response.Status.OK).entity(ratings).build();
+    }
+
+    @GET
+    @Path("/account/{id}")
+    @RolesAllowed("member")
+    public Response findByAccountId(@PathParam("id") Long accountId){
+        
+        List<Rating> ratings = ratingService.findByAccountId(accountId, jwt.getName(), jwt.getGroups().stream().findFirst().orElse(null));
         return Response.status(Response.Status.OK).entity(ratings).build();
     }
 
