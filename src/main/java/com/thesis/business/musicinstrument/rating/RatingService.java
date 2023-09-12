@@ -5,6 +5,7 @@ import java.util.List;
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.account.AccountService;
 import com.thesis.business.musicinstrument.order.CustomerOrderService;
+import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 import com.thesis.business.musicinstrument.product.ProductService;
 
@@ -34,13 +35,15 @@ public class RatingService {
     @Transactional
     public Long add(Rating rating, String username, String role) {
 
-        if(rating.getStar() < 0 || rating.getStar() > 10)
-            throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Star must greater than 0 and lower than 11");
+        if(rating.getStar() < 0 || rating.getStar() > 5)
+            throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Star must greater than 0 and lower than 5");
         if(accountService.findById(rating.getAccount().getId(), username, role) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
         if(productService.findById(rating.getProduct().getId()) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
-        if(orderDetailService.findByProductIdAndListOfOrder(rating.getProduct().getId(), customerOrderService.findByAccountId(rating.getAccount().getId())) == null)
+        OrderDetail orderDetail = orderDetailService.findByProductIdAndListOfOrder(rating.getProduct().getId(), 
+            customerOrderService.findByAccountId(rating.getAccount().getId()));
+        if(orderDetail == null || orderDetail.getCustomerOrder().getStatus() == false)
             throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "You must purchase this product before rating");
 
         ratingRepository.persist(rating);

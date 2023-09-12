@@ -9,6 +9,7 @@ import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 import com.thesis.business.musicinstrument.payment.PaymentService;
 import com.thesis.business.musicinstrument.product.Product;
+import com.thesis.business.musicinstrument.product.ProductService;
 
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
@@ -30,6 +31,9 @@ public class CustomerOrderService {
 
     @Inject
     OrderDetailService orderDetailService;
+
+    @Inject
+    ProductService productService;
 
     @Transactional
     public Long add(CustomerOrderRequest customerOrderRequest, String username, String role) {
@@ -60,7 +64,9 @@ public class CustomerOrderService {
             );
             orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
             orderDetailService.add(orderDetail);
+            productService.updateQuantityAfterPurchase(orderDetail.getProduct().getId(), orderDetail.getQuantity());
         }
+        
             
         return customerOrder.getId();
     }

@@ -32,7 +32,7 @@ public class OrderDetailService {
         if(customerOrderService.findById(orderDetail.getCustomerOrder().getId()) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
 
-        orderDetailRepository.persistAndFlush(orderDetail);
+        orderDetailRepository.persist(orderDetail);
         return orderDetail.getId();
     }
 

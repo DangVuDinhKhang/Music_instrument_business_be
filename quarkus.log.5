@@ -1,8 +1,9 @@
-2023-09-10 19:30:54,572 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.2.4.Final) started in 0.536s. Listening on: http://localhost:8080
-2023-09-10 19:30:54,573 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
-2023-09-10 19:30:54,574 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, reactive-routes, rest-client, resteasy, resteasy-jsonb, resteasy-multipart, security, smallrye-context-propagation, smallrye-jwt, vertx]
-2023-09-10 19:30:54,576 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 0.957s 
-2023-09-10 20:50:08,297 laptop-p3hp7of8 musical-instrument-dev.jar[19984] ERROR [io.qua.ver.htt.run.QuarkusErrorHandler] (executor-thread-29) HTTP Request to /api/rating failed, error id: 222ca9b0-1e6c-4941-b8bb-c604e2efec85-12: org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because the return value of "com.thesis.business.musicinstrument.rating.Rating.getStar()" is null
+2023-09-10 21:04:14,307 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument 1.0.0-SNAPSHOT on JVM (powered by Quarkus 3.2.4.Final) started in 1.452s. Listening on: http://localhost:8080
+2023-09-10 21:04:14,310 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) Profile dev activated. Live Coding activated.
+2023-09-10 21:04:14,311 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) Installed features: [agroal, cdi, hibernate-orm, hibernate-orm-panache, jdbc-postgresql, narayana-jta, reactive-routes, rest-client, resteasy, resteasy-jsonb, resteasy-multipart, security, smallrye-context-propagation, smallrye-jwt, vertx]
+2023-09-10 21:04:14,312 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload total time: 4.374s 
+2023-09-10 21:04:14,314 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Live reload took more than 4 seconds, you may want to enable instrumentation based reload (quarkus.live-reload.instrumentation=true). This allows small changes to take effect without restarting Quarkus.
+2023-09-10 21:04:37,697 laptop-p3hp7of8 musical-instrument-dev.jar[19984] ERROR [io.qua.ver.htt.run.QuarkusErrorHandler] (executor-thread-1) HTTP Request to /api/rating/account/2 failed, error id: 222ca9b0-1e6c-4941-b8bb-c604e2efec85-13: org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke "java.util.Set.stream()" because the return value of "org.eclipse.microprofile.jwt.JsonWebToken.getGroups()" is null
 	at org.jboss.resteasy.core.ExceptionHandler.handleApplicationException(ExceptionHandler.java:107)
 	at org.jboss.resteasy.core.ExceptionHandler.handleException(ExceptionHandler.java:344)
 	at org.jboss.resteasy.core.SynchronousDispatcher.writeException(SynchronousDispatcher.java:205)
@@ -17,40 +18,13 @@
 	at io.quarkus.resteasy.runtime.standalone.VertxRequestHandler$1.run(VertxRequestHandler.java:93)
 	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
 	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
-	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1512)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
 	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
 	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
 	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intValue()" because the return value of "com.thesis.business.musicinstrument.rating.Rating.getStar()" is null
-	at com.thesis.business.musicinstrument.rating.RatingService.add(RatingService.java:37)
-	at com.thesis.business.musicinstrument.rating.RatingService_Subclass.add$$superforward(Unknown Source)
-	at com.thesis.business.musicinstrument.rating.RatingService_Subclass$$function$$21.apply(Unknown Source)
-	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:73)
-	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:62)
-	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorBase.invokeInOurTx(TransactionalInterceptorBase.java:136)
-	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorBase.invokeInOurTx(TransactionalInterceptorBase.java:107)
-	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorRequired.doIntercept(TransactionalInterceptorRequired.java:38)
-	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorBase.intercept(TransactionalInterceptorBase.java:61)
-	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorRequired.intercept(TransactionalInterceptorRequired.java:32)
-	at io.quarkus.narayana.jta.runtime.interceptor.TransactionalInterceptorRequired_Bean.intercept(Unknown Source)
-	at io.quarkus.arc.impl.InterceptorInvocation.invoke(InterceptorInvocation.java:42)
-	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:30)
-	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
-	at com.thesis.business.musicinstrument.rating.RatingService_Subclass.add(Unknown Source)
-	at com.thesis.business.musicinstrument.rating.RatingService_ClientProxy.add(Unknown Source)
-	at com.thesis.business.musicinstrument.rating.RatingResource.add(RatingResource.java:39)
-	at com.thesis.business.musicinstrument.rating.RatingResource_Subclass.add$$superforward(Unknown Source)
-	at com.thesis.business.musicinstrument.rating.RatingResource_Subclass$$function$$11.apply(Unknown Source)
-	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:73)
-	at io.quarkus.arc.impl.AroundInvokeInvocationContext.proceed(AroundInvokeInvocationContext.java:62)
-	at io.quarkus.security.runtime.interceptor.SecurityHandler.handle(SecurityHandler.java:47)
-	at io.quarkus.security.runtime.interceptor.RolesAllowedInterceptor.intercept(RolesAllowedInterceptor.java:29)
-	at io.quarkus.security.runtime.interceptor.RolesAllowedInterceptor_Bean.intercept(Unknown Source)
-	at io.quarkus.arc.impl.InterceptorInvocation.invoke(InterceptorInvocation.java:42)
-	at io.quarkus.arc.impl.AroundInvokeInvocationContext.perform(AroundInvokeInvocationContext.java:30)
-	at io.quarkus.arc.impl.InvocationContexts.performAroundInvoke(InvocationContexts.java:27)
-	at com.thesis.business.musicinstrument.rating.RatingResource_Subclass.add(Unknown Source)
+Caused by: java.lang.NullPointerException: Cannot invoke "java.util.Set.stream()" because the return value of "org.eclipse.microprofile.jwt.JsonWebToken.getGroups()" is null
+	at com.thesis.business.musicinstrument.rating.RatingResource.findByAccountId(RatingResource.java:56)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
 	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
 	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
@@ -68,5 +42,44 @@ Caused by: java.lang.NullPointerException: Cannot invoke "java.lang.Integer.intV
 	at org.jboss.resteasy.core.SynchronousDispatcher.invoke(SynchronousDispatcher.java:429)
 	... 15 more
 
-2023-09-10 21:04:12,801 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Restarting quarkus due to changes in RatingResource.class, RatingService.class.
-2023-09-10 21:04:12,838 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument stopped in 0.026s
+2023-09-10 21:06:23,236 laptop-p3hp7of8 musical-instrument-dev.jar[19984] ERROR [io.qua.ver.htt.run.QuarkusErrorHandler] (executor-thread-1) HTTP Request to /api/rating/account/2 failed, error id: 222ca9b0-1e6c-4941-b8bb-c604e2efec85-14: org.jboss.resteasy.spi.UnhandledException: java.lang.NullPointerException: Cannot invoke "java.util.Set.stream()" because the return value of "org.eclipse.microprofile.jwt.JsonWebToken.getGroups()" is null
+	at org.jboss.resteasy.core.ExceptionHandler.handleApplicationException(ExceptionHandler.java:107)
+	at org.jboss.resteasy.core.ExceptionHandler.handleException(ExceptionHandler.java:344)
+	at org.jboss.resteasy.core.SynchronousDispatcher.writeException(SynchronousDispatcher.java:205)
+	at org.jboss.resteasy.core.SynchronousDispatcher.invoke(SynchronousDispatcher.java:452)
+	at org.jboss.resteasy.core.SynchronousDispatcher.lambda$invoke$4(SynchronousDispatcher.java:240)
+	at org.jboss.resteasy.core.SynchronousDispatcher.lambda$preprocess$0(SynchronousDispatcher.java:154)
+	at org.jboss.resteasy.core.interception.jaxrs.PreMatchContainerRequestContext.filter(PreMatchContainerRequestContext.java:321)
+	at org.jboss.resteasy.core.SynchronousDispatcher.preprocess(SynchronousDispatcher.java:157)
+	at org.jboss.resteasy.core.SynchronousDispatcher.invoke(SynchronousDispatcher.java:229)
+	at io.quarkus.resteasy.runtime.standalone.RequestDispatcher.service(RequestDispatcher.java:82)
+	at io.quarkus.resteasy.runtime.standalone.VertxRequestHandler.dispatch(VertxRequestHandler.java:147)
+	at io.quarkus.resteasy.runtime.standalone.VertxRequestHandler$1.run(VertxRequestHandler.java:93)
+	at io.quarkus.vertx.core.runtime.VertxCoreRecorder$14.runWith(VertxCoreRecorder.java:576)
+	at org.jboss.threads.EnhancedQueueExecutor$Task.run(EnhancedQueueExecutor.java:2513)
+	at org.jboss.threads.EnhancedQueueExecutor$ThreadBody.run(EnhancedQueueExecutor.java:1538)
+	at org.jboss.threads.DelegatingRunnable.run(DelegatingRunnable.java:29)
+	at org.jboss.threads.ThreadLocalResettingRunnable.run(ThreadLocalResettingRunnable.java:29)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+Caused by: java.lang.NullPointerException: Cannot invoke "java.util.Set.stream()" because the return value of "org.eclipse.microprofile.jwt.JsonWebToken.getGroups()" is null
+	at com.thesis.business.musicinstrument.rating.RatingResource.findByAccountId(RatingResource.java:56)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at org.jboss.resteasy.core.MethodInjectorImpl.invoke(MethodInjectorImpl.java:154)
+	at org.jboss.resteasy.core.MethodInjectorImpl.invoke(MethodInjectorImpl.java:118)
+	at org.jboss.resteasy.core.ResourceMethodInvoker.internalInvokeOnTarget(ResourceMethodInvoker.java:560)
+	at org.jboss.resteasy.core.ResourceMethodInvoker.invokeOnTargetAfterFilter(ResourceMethodInvoker.java:452)
+	at org.jboss.resteasy.core.ResourceMethodInvoker.lambda$invokeOnTarget$2(ResourceMethodInvoker.java:413)
+	at org.jboss.resteasy.core.interception.jaxrs.PreMatchContainerRequestContext.filter(PreMatchContainerRequestContext.java:321)
+	at org.jboss.resteasy.core.ResourceMethodInvoker.invokeOnTarget(ResourceMethodInvoker.java:415)
+	at org.jboss.resteasy.core.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:378)
+	at org.jboss.resteasy.core.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:356)
+	at org.jboss.resteasy.core.ResourceMethodInvoker.invoke(ResourceMethodInvoker.java:70)
+	at org.jboss.resteasy.core.SynchronousDispatcher.invoke(SynchronousDispatcher.java:429)
+	... 15 more
+
+2023-09-10 21:06:24,197 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.qua.dep.dev.RuntimeUpdatesProcessor] (vert.x-worker-thread-1) Restarting quarkus due to changes in RatingResource.class.
+2023-09-10 21:06:24,217 laptop-p3hp7of8 musical-instrument-dev.jar[19984] INFO  [io.quarkus] (Quarkus Main Thread) musical-instrument stopped in 0.016s

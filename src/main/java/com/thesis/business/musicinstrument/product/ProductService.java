@@ -140,6 +140,14 @@ public class ProductService {
         return product;
     }
 
+    public void updateQuantityAfterPurchase(Long id, Integer hasPurchasedQuantity){
+        Product productInDB = productRepository.findById(id);
+        if(productInDB == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
+        productInDB.setQuantity(productInDB.getQuantity() - hasPurchasedQuantity);
+        productRepository.persist(productInDB);
+    }
+
     @Transactional
     public void updateById(Long id, MultipartFormDataInput input) {
 
