@@ -48,9 +48,11 @@ public class CustomerOrderService {
         customerOrder.setAddress(customerOrderRequest.getAddress());
         customerOrder.setDate(LocalDate.now());
         customerOrder.setTotal(customerOrderRequest.getTotal());
+        customerOrder.setNote(customerOrderRequest.getNote());
         customerOrder.setAccount(customerOrderRequest.getAccount());
         customerOrder.setPayment(customerOrderRequest.getPayment());
-        customerOrder.setStatus(false);
+        customerOrder.setStatus(0);
+        System.out.println("Note: " + customerOrder.getNote());
 
         customerOrderRepository.persist(customerOrder);
 
@@ -87,8 +89,18 @@ public class CustomerOrderService {
     }
 
     @Transactional
-    public void updateById(Long id, Boolean status) {
+    public void updateById(Long id, Integer status) {
 
+        CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
+        if(customerOrderInDB == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
+
+        customerOrderInDB.setStatus(status);
+        customerOrderRepository.persist(customerOrderInDB);
+    }
+
+    @Transactional
+    public void cancelById(Long id, Integer status) {
 
         CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
         if(customerOrderInDB == null)

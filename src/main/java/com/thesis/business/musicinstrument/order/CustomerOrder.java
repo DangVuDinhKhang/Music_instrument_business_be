@@ -41,7 +41,11 @@ public class CustomerOrder {
     @Column(name = "address")
     private String address;
 
-    private Boolean status;
+    @Column(name = "status")
+    private Integer status;
+
+    @Column(name = "note", columnDefinition = "TEXT")
+    private String note;
 
     @ManyToOne
     @JoinColumn(name = "payment_id")

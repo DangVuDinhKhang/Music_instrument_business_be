@@ -1,5 +1,6 @@
 package com.thesis.business.musicinstrument.rating;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
@@ -43,9 +44,10 @@ public class RatingService {
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
         OrderDetail orderDetail = orderDetailService.findByProductIdAndListOfOrder(rating.getProduct().getId(), 
             customerOrderService.findByAccountId(rating.getAccount().getId()));
-        if(orderDetail == null || orderDetail.getCustomerOrder().getStatus() == false)
+        if(orderDetail == null || orderDetail.getCustomerOrder().getStatus() != 2)
             throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "You must purchase this product before rating");
 
+        rating.setDate(LocalDate.now());
         ratingRepository.persist(rating);
         return rating.getId();
     }

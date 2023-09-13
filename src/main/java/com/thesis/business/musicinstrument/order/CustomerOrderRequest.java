@@ -24,6 +24,8 @@ public class CustomerOrderRequest {
     
     private Long total;
 
+    private String note;
+
     private Payment payment;
 
     private Account account;
