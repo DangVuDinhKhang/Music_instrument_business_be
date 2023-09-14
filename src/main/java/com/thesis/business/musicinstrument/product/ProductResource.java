@@ -98,6 +98,14 @@ public class ProductResource {
     }
 
     @GET
+    @Path("/category/{id}")
+    public Response findByCategoryId(@PathParam("id") Long categoryId){
+
+        List<Product> products = productService.findByCategoryId(categoryId);
+        return Response.status(Response.Status.OK).entity(products).build();
+    }
+
+    @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id){
 

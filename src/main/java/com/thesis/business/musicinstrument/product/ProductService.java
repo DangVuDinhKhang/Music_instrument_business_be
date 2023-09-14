@@ -140,11 +140,22 @@ public class ProductService {
         return product;
     }
 
-    public void updateQuantityAfterPurchase(Long id, Integer hasPurchasedQuantity){
+    public List<Product> findByCategoryId(Long categoryId){
+
+        List<Product> products = productRepository.find("category.id", categoryId).list();
+        if(products.size() == 0)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Category does not exist");
+        return products;
+    }
+
+    public void updateQuantity(Long id, Integer hasPurchasedQuantity, Boolean canceled){
         Product productInDB = productRepository.findById(id);
         if(productInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
-        productInDB.setQuantity(productInDB.getQuantity() - hasPurchasedQuantity);
+        if(!canceled)
+            productInDB.setQuantity(productInDB.getQuantity() - hasPurchasedQuantity);
+        else
+            productInDB.setQuantity(productInDB.getQuantity() + hasPurchasedQuantity);
         productRepository.persist(productInDB);
     }
 

@@ -52,7 +52,6 @@ public class CustomerOrderService {
         customerOrder.setAccount(customerOrderRequest.getAccount());
         customerOrder.setPayment(customerOrderRequest.getPayment());
         customerOrder.setStatus(0);
-        System.out.println("Note: " + customerOrder.getNote());
 
         customerOrderRepository.persist(customerOrder);
 
@@ -66,7 +65,7 @@ public class CustomerOrderService {
             );
             orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
             orderDetailService.add(orderDetail);
-            productService.updateQuantityAfterPurchase(orderDetail.getProduct().getId(), orderDetail.getQuantity());
+            productService.updateQuantity(orderDetail.getProduct().getId(), orderDetail.getQuantity(), false);
         }
         
             
@@ -94,9 +93,18 @@ public class CustomerOrderService {
         CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
         if(customerOrderInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-
+        if(customerOrderInDB.getStatus() == -1 && status != -1){
+            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+            for(int i = 0; i < orderDetails.size(); i++)
+                productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), false);
+        }
         customerOrderInDB.setStatus(status);
         customerOrderRepository.persist(customerOrderInDB);
+        if(status == -1){
+            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+            for(int i = 0; i < orderDetails.size(); i++)
+                productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
+        }
     }
 
     @Transactional
@@ -105,9 +113,14 @@ public class CustomerOrderService {
         CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
         if(customerOrderInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
+        if(status == -1){
+            customerOrderInDB.setStatus(status);
+            customerOrderRepository.persist(customerOrderInDB);
 
-        customerOrderInDB.setStatus(status);
-        customerOrderRepository.persist(customerOrderInDB);
+            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+            for(int i = 0; i < orderDetails.size(); i++)
+                productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
+        }     
     }
 
     @Transactional

@@ -17,10 +17,10 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(name = "name", length = 20)
+    @Column(name = "name", length = 50)
     private String name;
 
-    @Column(name = "contact", length = 50)
+    @Column(name = "contact", length = 100)
     private String contact;
 
 }
