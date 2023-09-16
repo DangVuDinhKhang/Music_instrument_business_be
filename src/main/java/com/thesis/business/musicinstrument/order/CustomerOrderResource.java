@@ -15,6 +15,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -85,5 +86,15 @@ public class CustomerOrderResource {
         customerOrderService.deleteById(id);
 
         return Response.status(Response.Status.OK).build();
+    }
+
+    @GET
+    @Path("/statistic")
+    @RolesAllowed("admin")
+    public Response statistic(@QueryParam("type") String type) {
+
+        List<CustomerOrder> a = customerOrderService.statistic(type);
+
+        return Response.status(Response.Status.OK).entity(a).build();
     }
 }

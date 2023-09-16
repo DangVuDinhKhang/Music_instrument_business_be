@@ -109,6 +109,10 @@ public class AccountService {
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
     }
 
+    public Long statisticMember(){
+        return accountRepository.count("role", "member");
+    }
+
     private void validateExistedUsername(Account account) {
 
         Account accountInDB = accountRepository.find("username", account.getUsername()).firstResult();
@@ -128,5 +132,7 @@ public class AccountService {
         accountDTO.setToken(token);
         return accountDTO;
     }
+
+    
 
 }

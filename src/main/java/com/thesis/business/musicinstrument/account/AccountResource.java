@@ -1,9 +1,5 @@
 package com.thesis.business.musicinstrument.account;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -62,6 +58,14 @@ public class AccountResource {
     public Response findAll() {
         List<Account> accounts = accountService.findAll();
         return Response.status(Response.Status.OK).entity(accounts).build();
+    }
+
+    @GET
+    @Path("/statistic")
+    @RolesAllowed("admin")
+    public Response statisticMember() {
+        Long numberOfAccounts = accountService.statisticMember();
+        return Response.status(Response.Status.OK).entity(numberOfAccounts).build();
     }
 
     @PUT

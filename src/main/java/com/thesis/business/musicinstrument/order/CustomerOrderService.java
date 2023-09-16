@@ -1,5 +1,6 @@
 package com.thesis.business.musicinstrument.order;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -132,4 +133,24 @@ public class CustomerOrderService {
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
     }
 
+    public List<CustomerOrder> statistic(String type) {
+        if(type.equals("month")){
+            return customerOrderRepository.find("SELECT DATE_TRUNC('month', date) AS month, SUM(total) AS total " +
+                "FROM CustomerOrder " + "WHERE status = 2" +
+                "GROUP BY DATE_TRUNC('month', date)")
+                .list();
+        }
+        else{
+            LocalDate currentDate = LocalDate.now();
+
+            // Tính ngày bắt đầu của tuần trước
+            LocalDate lastWeekStartDate = currentDate.minusWeeks(1).with(DayOfWeek.MONDAY);
+
+            return customerOrderRepository.find("SELECT date, SUM(total) AS total " +
+                "FROM CustomerOrder " +
+                "WHERE date >= ?1 AND date <= ?2 and status = 2" +
+                "GROUP BY date", lastWeekStartDate, currentDate)
+                .list();
+        }
+    }
 }

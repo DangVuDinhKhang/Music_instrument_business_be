@@ -73,6 +73,10 @@ public class RatingService {
         return ratingRepository.findById(id);
     }
 
+    public Long statistic(){
+        return ratingRepository.count();
+    }
+
 
     @Transactional
     public void deleteById(Long id){
