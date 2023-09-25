@@ -132,6 +132,11 @@ public class ProductService {
         return productRepository.listAll();
     }
 
+    public List<Product> findByWord(String word) {
+
+        return productRepository.find("name ILIKE ?1", "%" + word + "%").list();
+    }
+
     public Product findById(Long id){
 
         Product product = productRepository.findById(id);

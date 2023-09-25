@@ -18,11 +18,9 @@ public class ImportOrderRequest {
     
     private Long total;
 
-    private String note;
-
     private Supplier supplier;
 
     private Account account;
 
-    private List<ProductInCartDTO> productsInCartDTO;
+    private List<ImportOrderProduct> products;
 }

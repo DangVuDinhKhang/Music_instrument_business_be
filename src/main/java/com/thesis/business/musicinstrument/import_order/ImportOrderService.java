@@ -51,20 +51,20 @@ public class ImportOrderService {
         ImportOrder importOrder = new ImportOrder();
         importOrder.setDate(LocalDate.now());
         importOrder.setTotal(importOrderRequest.getTotal());
-        importOrder.setNote(importOrderRequest.getNote());
         importOrder.setAccount(importOrderRequest.getAccount());
         importOrder.setSupplier(importOrderRequest.getSupplier());
         importOrder.setStatus(0);
 
         importOrderRepository.persist(importOrder);
 
-        for(int i = 0; i < importOrderRequest.getProductsInCartDTO().size(); i++){
+        for(int i = 0; i < importOrderRequest.getProducts().size(); i++){
             ImportOrderDetail importOrderDetail = new ImportOrderDetail();
-            importOrderDetail.setProduct(new Product(importOrderRequest.getProductsInCartDTO().get(i).getProduct().getId()));
-            importOrderDetail.setQuantity(importOrderRequest.getProductsInCartDTO().get(i).getQuantity());
+            importOrderDetail.setProduct(new Product(importOrderRequest.getProducts().get(i).getId()));
+            importOrderDetail.setQuantity(importOrderRequest.getProducts().get(i).getQuantity());
+            importOrderDetail.setPrice(importOrderRequest.getProducts().get(i).getPrice());
             importOrderDetail.setTotal(
-                (long)importOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
-                (long)importOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()
+                (long)importOrderRequest.getProducts().get(i).getQuantity() *
+                (long)importOrderRequest.getProducts().get(i).getPrice()
             );
             importOrderDetail.setImportOrder(new ImportOrder(importOrder.getId()));
             importOrderDetailService.add(importOrderDetail);

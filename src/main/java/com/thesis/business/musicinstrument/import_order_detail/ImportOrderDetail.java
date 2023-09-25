@@ -25,6 +25,9 @@ public class ImportOrderDetail {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @Column(name = "price")
+    private Integer price;
+
     @Column(name = "total")
     private Long total;
 

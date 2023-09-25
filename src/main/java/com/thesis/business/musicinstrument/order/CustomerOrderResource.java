@@ -93,8 +93,18 @@ public class CustomerOrderResource {
     @RolesAllowed("admin")
     public Response statistic(@QueryParam("type") String type) {
 
-        List<CustomerOrder> a = customerOrderService.statistic(type);
+        List<CustomerOrder> customerOrders = customerOrderService.statistic(type);
 
-        return Response.status(Response.Status.OK).entity(a).build();
+        return Response.status(Response.Status.OK).entity(customerOrders).build();
+    }
+
+    @GET
+    @Path("/statistic-total")
+    @RolesAllowed("admin")
+    public Response statisticTotal(@QueryParam("type") String type) {
+
+        Long totalOrders = customerOrderService.statisticTotal();
+
+        return Response.status(Response.Status.OK).entity(totalOrders).build();
     }
 }

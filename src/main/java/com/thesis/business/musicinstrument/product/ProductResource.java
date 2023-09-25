@@ -61,6 +61,14 @@ public class ProductResource {
         return Response.status(Response.Status.OK).entity(products).build();
     }
 
+    @GET
+    @Path("/search/{key-word}")
+    public Response findByWord(@PathParam("key-word") String word){
+        
+        List<Product> products = productService.findByWord(word);
+        return Response.status(Response.Status.OK).entity(products).build();
+    }
+
     @PUT
     @Path("/add-to-cart/")
     public Response addToCart(AddToCartRequest addToCartRequest){

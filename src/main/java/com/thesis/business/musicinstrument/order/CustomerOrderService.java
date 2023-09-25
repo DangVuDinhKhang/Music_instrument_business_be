@@ -148,9 +148,13 @@ public class CustomerOrderService {
 
             return customerOrderRepository.find("SELECT date, SUM(total) AS total " +
                 "FROM CustomerOrder " +
-                "WHERE date >= ?1 AND date <= ?2 and status = 2" +
-                "GROUP BY date", lastWeekStartDate, currentDate)
+                "WHERE date >= ?1 AND date <= ?2 and status = ?3" +
+                "GROUP BY date", lastWeekStartDate, currentDate, 2)
                 .list();
         }
+    }
+
+    public Long statisticTotal(){
+        return customerOrderRepository.count("status = ?1", 2);
     }
 }
