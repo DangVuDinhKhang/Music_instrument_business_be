@@ -1,5 +1,6 @@
 package com.thesis.business.musicinstrument.import_order;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -90,41 +91,59 @@ public class ImportOrderService {
     //     return customerOrderRepository.list("account.id", accountId);
     // }
 
-    // @Transactional
-    // public void updateById(Long id, Integer status) {
+    @Transactional
+    public void updateById(Long id, Integer status) {
 
-    //     CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
-    //     if(customerOrderInDB == null)
-    //         throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-    //     if(customerOrderInDB.getStatus() == -1 && status != -1){
-    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-    //         for(int i = 0; i < orderDetails.size(); i++)
-    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), false);
-    //     }
-    //     customerOrderInDB.setStatus(status);
-    //     customerOrderRepository.persist(customerOrderInDB);
-    //     if(status == -1){
-    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-    //         for(int i = 0; i < orderDetails.size(); i++)
-    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
-    //     }
-    // }
+        ImportOrder importOrderInDB = importOrderRepository.findById(id);
+        if(importOrderInDB == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Import Order does not exist");
+        if(status == 1){
+            List<ImportOrderDetail> importOrderDetails = importOrderDetailService.findByImportOrderId(importOrderInDB.getId());
+            for(int i = 0; i < importOrderDetails.size(); i++)
+                productService.updateQuantity(importOrderDetails.get(i).getProduct().getId(), importOrderDetails.get(i).getQuantity(), true);
+        }
+        
+        else if(status == 0){
+            List<ImportOrderDetail> importOrderDetails = importOrderDetailService.findByImportOrderId(importOrderInDB.getId());
+            for(int i = 0; i < importOrderDetails.size(); i++)
+                productService.updateQuantity(importOrderDetails.get(i).getProduct().getId(), importOrderDetails.get(i).getQuantity(), false);
+        }
+        else{
+            throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Wrong status");
+        }
+        importOrderInDB.setStatus(status);
+        importOrderRepository.persist(importOrderInDB);
+    }
 
-    // @Transactional
-    // public void cancelById(Long id, Integer status) {
+    public List<ImportOrder> statistic(String type) {
+        if(type.equals("month")){
+            return importOrderRepository.find("SELECT DATE_TRUNC('month', date) AS month, SUM(total) AS total " +
+                "FROM ImportOrder " + "WHERE status = 1" +
+                "GROUP BY DATE_TRUNC('month', date)")
+                .list();
+        }
+        else{
+            LocalDate currentDate = LocalDate.now();
 
-    //     CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
-    //     if(customerOrderInDB == null)
-    //         throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-    //     if(status == -1){
-    //         customerOrderInDB.setStatus(status);
-    //         customerOrderRepository.persist(customerOrderInDB);
+            // Tính ngày bắt đầu của tuần trước
+            LocalDate lastWeekStartDate = currentDate.minusWeeks(1).with(DayOfWeek.MONDAY);
 
-    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-    //         for(int i = 0; i < orderDetails.size(); i++)
-    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
-    //     }     
-    // }
+            return importOrderRepository.find("SELECT date, SUM(total) AS total " +
+                "FROM ImportOrder " +
+                "WHERE date >= ?1 AND date <= ?2 and status = ?3" +
+                "GROUP BY date", lastWeekStartDate, currentDate, 1)
+                .list();
+        }
+    }
+
+    public Long statisticTotalSpending(){
+        List<ImportOrder> importOrders = importOrderRepository.find("status", 1).list();
+        Long totalSpeding  = 0L;
+        for(ImportOrder importOrder : importOrders){
+            totalSpeding += importOrder.getTotal();
+        }
+        return totalSpeding;
+    }
 
     // @Transactional
     // public void deleteById(Long id){

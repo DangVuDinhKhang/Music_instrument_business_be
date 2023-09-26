@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
+import org.glassfish.jaxb.runtime.v2.schemagen.xmlschema.Import;
 
 import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.order.CustomerOrderRequest;
@@ -25,7 +26,7 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.core.MediaType;
 
-@Path("/import-orders")
+@Path("/import-order")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class ImportOrderResource {
@@ -50,14 +51,14 @@ public class ImportOrderResource {
         return Response.status(Response.Status.CREATED).location(location).build();
     }
 
-    // @GET
-    // @Path("/")
-    // @RolesAllowed("admin")
-    // public Response findAll() {
+    @GET
+    @Path("/")
+    @RolesAllowed("admin")
+    public Response findAll() {
 
-    //     List<CustomerOrder> customerOrders = customerOrderService.findAll();
-    //     return Response.status(Response.Status.OK).entity(customerOrders).build();
-    // }
+        List<ImportOrder> importOrders = importOrderService.findAll();
+        return Response.status(Response.Status.OK).entity(importOrders).build();
+    }
 
     // @GET
     // @Path("/account/{id}")
@@ -68,13 +69,13 @@ public class ImportOrderResource {
     //     return Response.status(Response.Status.OK).entity(customerOrders).build();
     // }
 
-    // @PUT
-    // @Path("/{id}")
-    // @RolesAllowed("admin")
-    // public Response updateById(@PathParam("id") Long id, UpdateCustomerOrderRequest updateCustomerOrderRequest){
-    //     customerOrderService.updateById(id, updateCustomerOrderRequest.getStatus());
-    //     return Response.status(Response.Status.OK).build();
-    // }
+    @PUT
+    @Path("/{id}")
+    @RolesAllowed("admin")
+    public Response updateById(@PathParam("id") Long id, UpdateCustomerOrderRequest updateCustomerOrderRequest){
+        importOrderService.updateById(id, updateCustomerOrderRequest.getStatus());
+        return Response.status(Response.Status.OK).build();
+    }
 
     // @PUT
     // @Path("/cancel/{id}")
@@ -94,15 +95,25 @@ public class ImportOrderResource {
     //     return Response.status(Response.Status.OK).build();
     // }
 
-    // @GET
-    // @Path("/statistic")
-    // @RolesAllowed("admin")
-    // public Response statistic(@QueryParam("type") String type) {
+    @GET
+    @Path("/statistic")
+    @RolesAllowed("admin")
+    public Response statistic(@QueryParam("type") String type) {
 
-    //     List<CustomerOrder> customerOrders = customerOrderService.statistic(type);
+        List<ImportOrder> importOrders = importOrderService.statistic(type);
 
-    //     return Response.status(Response.Status.OK).entity(customerOrders).build();
-    // }
+        return Response.status(Response.Status.OK).entity(importOrders).build();
+    }
+
+    @GET
+    @Path("/statistic-total-spending")
+    @RolesAllowed("admin")
+    public Response statisticTotalSpending() {
+
+        Long totalSpedings = importOrderService.statisticTotalSpending();
+
+        return Response.status(Response.Status.OK).entity(totalSpedings).build();
+    }
 
     // @GET
     // @Path("/statistic-total")

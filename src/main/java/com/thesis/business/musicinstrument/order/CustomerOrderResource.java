@@ -107,4 +107,14 @@ public class CustomerOrderResource {
 
         return Response.status(Response.Status.OK).entity(totalOrders).build();
     }
+
+    @GET
+    @Path("/statistic-total-revenue")
+    @RolesAllowed("admin")
+    public Response statisticTotalRevenue() {
+
+        Long totalRevenues = customerOrderService.statisticTotalRevenue();
+
+        return Response.status(Response.Status.OK).entity(totalRevenues).build();
+    }
 }

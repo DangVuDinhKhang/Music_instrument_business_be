@@ -140,7 +140,7 @@ public class CustomerOrderService {
                 "GROUP BY DATE_TRUNC('month', date)")
                 .list();
         }
-        else{
+        else {
             LocalDate currentDate = LocalDate.now();
 
             // Tính ngày bắt đầu của tuần trước
@@ -156,5 +156,14 @@ public class CustomerOrderService {
 
     public Long statisticTotal(){
         return customerOrderRepository.count("status = ?1", 2);
+    }
+
+    public Long statisticTotalRevenue(){
+        List<CustomerOrder> customerOrders = customerOrderRepository.find("status", 2).list();
+        Long totalRevenue  = 0L;
+        for(CustomerOrder customerOrder : customerOrders){
+            totalRevenue += customerOrder.getTotal();
+        }
+        return totalRevenue;
     }
 }
