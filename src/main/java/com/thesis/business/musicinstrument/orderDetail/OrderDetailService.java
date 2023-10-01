@@ -65,6 +65,11 @@ public class OrderDetailService {
         return orderDetailRepository.findById(id);
     }
 
+    public List<OrderDetail> findTopThreeProducts(){
+        return orderDetailRepository.find("SELECT product.id, COUNT(*) as count " + 
+        "FROM OrderDetail " + "GROUP BY product.id " + "ORDER BY count DESC").list();
+    }
+
     @Transactional
     public void updateById(Long id, OrderDetail orderDetail) {
 

@@ -18,6 +18,8 @@ import com.thesis.business.musicinstrument.cart_product.CartProductService;
 import com.thesis.business.musicinstrument.category.Category;
 import com.thesis.business.musicinstrument.category.CategoryService;
 import com.thesis.business.musicinstrument.image.ImageService;
+import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
+import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
@@ -45,6 +47,9 @@ public class ProductService {
 
     @Inject
     CartProductService cartProductService;
+
+    @Inject
+    OrderDetailService orderDetailService;
 
     @Transactional
     public Long add(MultipartFormDataInput input) {
@@ -135,6 +140,13 @@ public class ProductService {
     public List<Product> findByWord(String word) {
 
         return productRepository.find("name ILIKE ?1", "%" + word + "%").list();
+    }
+
+    public List<OrderDetail> findPopular() {
+
+        return orderDetailService.findTopThreeProducts();
+        
+        //return productRepository.listAll();
     }
 
     public Product findById(Long id){

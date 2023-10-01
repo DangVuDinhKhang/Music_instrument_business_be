@@ -8,6 +8,8 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.jboss.resteasy.annotations.providers.multipart.MultipartForm;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
+import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
+
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
@@ -66,6 +68,14 @@ public class ProductResource {
     public Response findByWord(@PathParam("key-word") String word){
         
         List<Product> products = productService.findByWord(word);
+        return Response.status(Response.Status.OK).entity(products).build();
+    }
+
+    @GET
+    @Path("/popular")
+    public Response findPopular(){
+        
+        List<OrderDetail> products = productService.findPopular();
         return Response.status(Response.Status.OK).entity(products).build();
     }
 
