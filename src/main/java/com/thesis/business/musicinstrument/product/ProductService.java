@@ -160,8 +160,13 @@ public class ProductService {
     public List<Product> findByCategoryId(Long categoryId){
 
         List<Product> products = productRepository.find("category.id", categoryId).list();
-        if(products.size() == 0)
-            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Category does not exist");
+        return products;
+    }
+
+    public List<Product> findRelated(Long categoryId, Long productId){
+
+        List<Product> products = productRepository.find("category.id = ?1 AND id <> ?2", categoryId, productId).list();
+        products = products.subList(0, Math.min(products.size(), 3));
         return products;
     }
 

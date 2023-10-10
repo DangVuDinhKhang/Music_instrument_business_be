@@ -124,6 +124,15 @@ public class ProductResource {
     }
 
     @GET
+    @Path("/{productId}/category/{categoryId}")
+    public Response findRelated(@PathParam("categoryId") Long categoryId, @PathParam("productId") Long productId){
+
+        List<Product> products = productService.findRelated(categoryId, productId);
+
+        return Response.status(Response.Status.OK).entity(products).build();
+    }
+
+    @GET
     @Path("/{id}")
     public Response findById(@PathParam("id") Long id){
 
