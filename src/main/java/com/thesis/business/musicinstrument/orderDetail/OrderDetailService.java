@@ -44,16 +44,12 @@ public class OrderDetailService {
         return orderDetails;
     }   
 
-    public OrderDetail findByProductIdAndListOfOrder(Long productId, List<CustomerOrder> customerOrders){
+    public List<OrderDetail> findByProductIdAndListOfOrder(Long productId, List<CustomerOrder> customerOrders){
 
-        // List<OrderDetail> orderDetails = orderDetailRepository.list("product.id", productId);
-        // if(orderDetails.isEmpty())
-        //     throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
-        // return orderDetails;
 
-        OrderDetail orderDetails;
+        List<OrderDetail> orderDetails;
         for(CustomerOrder customerOrder : customerOrders){
-            orderDetails = orderDetailRepository.find("product.id = ?1 and customerOrder.id = ?2", productId, customerOrder.getId()).firstResult();
+            orderDetails = orderDetailRepository.find("product.id = ?1 and customerOrder.id = ?2", productId, customerOrder.getId()).list();
             if(orderDetails != null)
                 return orderDetails;
         }

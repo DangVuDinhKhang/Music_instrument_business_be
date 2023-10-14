@@ -3,6 +3,7 @@ package com.thesis.business.musicinstrument.rating;
 import java.time.LocalDate;
 
 import com.thesis.business.musicinstrument.account.Account;
+import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.product.Product;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
@@ -40,7 +41,7 @@ public class Rating {
     private Account account;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "order_detail_id")
+    private OrderDetail orderDetail;
 
 }

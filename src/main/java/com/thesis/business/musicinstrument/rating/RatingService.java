@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.account.AccountService;
+import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.order.CustomerOrderService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
@@ -40,11 +41,10 @@ public class RatingService {
             throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Star must greater than 0 and lower than 5");
         if(accountService.findById(rating.getAccount().getId(), username, role) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
-        if(productService.findById(rating.getProduct().getId()) == null)
-            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
-        OrderDetail orderDetail = orderDetailService.findByProductIdAndListOfOrder(rating.getProduct().getId(), 
-            customerOrderService.findByAccountId(rating.getAccount().getId()));
-        if(orderDetail == null || orderDetail.getCustomerOrder().getStatus() != 2)
+
+        OrderDetail orderDetail = orderDetailService.findById(rating.getOrderDetail().getId());
+        CustomerOrder customerOrder = customerOrderService.findById(orderDetail.getCustomerOrder().getId());
+        if(customerOrder.getStatus() != 2)
             throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "You must purchase this product before rating");
 
         rating.setDate(LocalDate.now());
@@ -57,7 +57,7 @@ public class RatingService {
         if(productService.findById(productId) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
 
-        return ratingRepository.list("product.id", productId);
+        return ratingRepository.list("orderDetail.product.id", productId);
     }
 
     public List<Rating> findByAccountId(Long accountId, String username, String role) {

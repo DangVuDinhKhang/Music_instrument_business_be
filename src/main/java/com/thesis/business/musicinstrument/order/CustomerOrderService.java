@@ -85,7 +85,7 @@ public class CustomerOrderService {
 
     public List<CustomerOrder> findByAccountId(Long accountId){
 
-        return customerOrderRepository.list("account.id", accountId);
+        return customerOrderRepository.list("account.id = ?1 ORDER BY date", accountId);
     }
 
     @Transactional
