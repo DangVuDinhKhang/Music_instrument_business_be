@@ -3,6 +3,8 @@ package com.thesis.business.musicinstrument.orderDetail;
 import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.order.CustomerOrderService;
 import com.thesis.business.musicinstrument.product.ProductService;
@@ -22,13 +24,16 @@ public class OrderDetailService {
     ProductService productService;
 
     @Inject
+    ImportOrderDetailService importOrderDetailService;
+
+    @Inject
     CustomerOrderService customerOrderService;
 
     @Transactional
     public Long add(OrderDetail orderDetail) {
 
-        if(productService.findById(orderDetail.getProduct().getId()) == null)
-            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
+        // if(importOrderDetailService.findById(orderDetail.getImportOrderDetail().getId()) == null)
+        //     throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Import order detail does not exist");
         if(customerOrderService.findById(orderDetail.getCustomerOrder().getId()) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
 

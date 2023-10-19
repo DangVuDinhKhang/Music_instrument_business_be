@@ -62,6 +62,7 @@ public class ImportOrderService {
             ImportOrderDetail importOrderDetail = new ImportOrderDetail();
             importOrderDetail.setProduct(new Product(importOrderRequest.getProducts().get(i).getId()));
             importOrderDetail.setQuantity(importOrderRequest.getProducts().get(i).getQuantity());
+            importOrderDetail.setSoldQuantity(0);
             importOrderDetail.setPrice(importOrderRequest.getProducts().get(i).getPrice());
             importOrderDetail.setTotal(
                 (long)importOrderRequest.getProducts().get(i).getQuantity() *

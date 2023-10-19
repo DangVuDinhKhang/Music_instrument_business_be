@@ -25,6 +25,9 @@ public class ImportOrderDetail {
     @Column(name = "quantity")
     private Integer quantity;
 
+    @Column(name = "sold_quantity")
+    private Integer soldQuantity;
+
     @Column(name = "price")
     private Integer price;
 

@@ -6,6 +6,10 @@ import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.account.AccountService;
+import com.thesis.business.musicinstrument.import_order.ImportOrder;
+import com.thesis.business.musicinstrument.import_order.ImportOrderService;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 import com.thesis.business.musicinstrument.payment.PaymentService;
@@ -36,6 +40,12 @@ public class CustomerOrderService {
     @Inject
     ProductService productService;
 
+    @Inject
+    ImportOrderDetailService importOrderDetailService;
+
+    @Inject 
+    ImportOrderService importOrderService;
+
     @Transactional
     public Long add(CustomerOrderRequest customerOrderRequest, String username, String role) {
 
@@ -58,15 +68,29 @@ public class CustomerOrderService {
 
         for(int i = 0; i < customerOrderRequest.getProductsInCartDTO().size(); i++){
             OrderDetail orderDetail = new OrderDetail();
-            orderDetail.setProduct(new Product(customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getId()));
             orderDetail.setQuantity(customerOrderRequest.getProductsInCartDTO().get(i).getQuantity());
+            List<ImportOrderDetail> importOrderDetails = importOrderDetailService.findByProductId(
+                customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getId()
+            );
+            System.out.println(importOrderDetails);
+            for(int j = 0; j < importOrderDetails.size(); j++){
+                if(importOrderDetails.get(j).getSoldQuantity() + orderDetail.getQuantity() <= importOrderDetails.get(j).getQuantity()){
+                    ImportOrder importOrder = importOrderService.findById(importOrderDetails.get(j).getImportOrder().getId());
+                    if(importOrder.getStatus() == 1){
+                        orderDetail.setImportOrderDetail(importOrderDetails.get(j));
+                        break;
+                    }
+                }
+            }
+            
             orderDetail.setTotal(
                 (long)customerOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
                 (long)customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()
             );
             orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
             orderDetailService.add(orderDetail);
-            productService.updateQuantity(orderDetail.getProduct().getId(), orderDetail.getQuantity(), false);
+            importOrderDetailService.updateSoldQuantity(orderDetail.getImportOrderDetail().getId(), orderDetail.getQuantity(), false);
+            productService.updateQuantity(orderDetail.getImportOrderDetail().getProduct().getId(), orderDetail.getQuantity(), false);
         }
         
             
@@ -88,41 +112,41 @@ public class CustomerOrderService {
         return customerOrderRepository.list("account.id = ?1 ORDER BY date", accountId);
     }
 
-    @Transactional
-    public void updateById(Long id, Integer status) {
+    // @Transactional
+    // public void updateById(Long id, Integer status) {
 
-        CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
-        if(customerOrderInDB == null)
-            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-        if(customerOrderInDB.getStatus() == -1 && status != -1){
-            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-            for(int i = 0; i < orderDetails.size(); i++)
-                productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), false);
-        }
-        customerOrderInDB.setStatus(status);
-        customerOrderRepository.persist(customerOrderInDB);
-        if(status == -1){
-            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-            for(int i = 0; i < orderDetails.size(); i++)
-                productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
-        }
-    }
+    //     CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
+    //     if(customerOrderInDB == null)
+    //         throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
+    //     if(customerOrderInDB.getStatus() == -1 && status != -1){
+    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+    //         for(int i = 0; i < orderDetails.size(); i++)
+    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), false);
+    //     }
+    //     customerOrderInDB.setStatus(status);
+    //     customerOrderRepository.persist(customerOrderInDB);
+    //     if(status == -1){
+    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+    //         for(int i = 0; i < orderDetails.size(); i++)
+    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
+    //     }
+    // }
 
-    @Transactional
-    public void cancelById(Long id, Integer status) {
+    // @Transactional
+    // public void cancelById(Long id, Integer status) {
 
-        CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
-        if(customerOrderInDB == null)
-            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-        if(status == -1){
-            customerOrderInDB.setStatus(status);
-            customerOrderRepository.persist(customerOrderInDB);
+    //     CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
+    //     if(customerOrderInDB == null)
+    //         throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
+    //     if(status == -1){
+    //         customerOrderInDB.setStatus(status);
+    //         customerOrderRepository.persist(customerOrderInDB);
 
-            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-            for(int i = 0; i < orderDetails.size(); i++)
-                productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
-        }     
-    }
+    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+    //         for(int i = 0; i < orderDetails.size(); i++)
+    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
+    //     }     
+    // }
 
     @Transactional
     public void deleteById(Long id){

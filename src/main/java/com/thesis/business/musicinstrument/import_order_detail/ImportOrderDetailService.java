@@ -47,6 +47,21 @@ public class ImportOrderDetailService {
         return importOrderDetails;
     }   
 
+    public List<ImportOrderDetail> findByProductId(Long productId) {
+        return importOrderDetailRepository.find("product.id = ?1  order by price asc", productId).list();
+    }
+
+    public void updateSoldQuantity(Long id, Integer hasPurchasedQuantity, Boolean canceled) {
+
+        ImportOrderDetail importOrderDetail = importOrderDetailRepository.findById(id);
+        if(canceled)
+            importOrderDetail.setSoldQuantity(importOrderDetail.getSoldQuantity() - hasPurchasedQuantity);
+        else
+            importOrderDetail.setSoldQuantity(importOrderDetail.getSoldQuantity() + hasPurchasedQuantity);
+
+        importOrderDetailRepository.persist(importOrderDetail);
+    }
+
     // public OrderDetail findByProductIdAndListOfOrder(Long productId, List<CustomerOrder> customerOrders){
 
     //     // List<OrderDetail> orderDetails = orderDetailRepository.list("product.id", productId);
