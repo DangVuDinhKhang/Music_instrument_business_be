@@ -66,6 +66,8 @@ public class CustomerOrderService {
 
         customerOrderRepository.persist(customerOrder);
 
+        Integer missing = 0;
+
         for(int i = 0; i < customerOrderRequest.getProductsInCartDTO().size(); i++){
             OrderDetail orderDetail = new OrderDetail();
             orderDetail.setQuantity(customerOrderRequest.getProductsInCartDTO().get(i).getQuantity());
@@ -81,16 +83,35 @@ public class CustomerOrderService {
                         break;
                     }
                 }
+                else{
+                    System.out.println("Khong du");
+                    Integer tempQuantity = 0;
+                    for(int k = 1; k < orderDetail.getQuantity(); k++){
+                        tempQuantity = orderDetail.getQuantity() - k;
+                        if(importOrderDetails.get(j).getSoldQuantity() + tempQuantity <= importOrderDetails.get(j).getQuantity()){
+                            ImportOrder importOrder = importOrderService.findById(importOrderDetails.get(j).getImportOrder().getId());
+                            if(importOrder.getStatus() == 1){
+                                orderDetail.setImportOrderDetail(importOrderDetails.get(j));
+                                break;
+                            }
+                            missing = k;
+                        }
+                    }
+                }
+            }
+
+            if(missing != 0) {
+                
             }
             
-            orderDetail.setTotal(
-                (long)customerOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
-                (long)customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()
-            );
-            orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
-            orderDetailService.add(orderDetail);
-            importOrderDetailService.updateSoldQuantity(orderDetail.getImportOrderDetail().getId(), orderDetail.getQuantity(), false);
-            productService.updateQuantity(orderDetail.getImportOrderDetail().getProduct().getId(), orderDetail.getQuantity(), false);
+            // orderDetail.setTotal(
+            //     (long)customerOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
+            //     (long)customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()
+            // );
+            // orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
+            // orderDetailService.add(orderDetail);
+            // importOrderDetailService.updateSoldQuantity(orderDetail.getImportOrderDetail().getId(), orderDetail.getQuantity(), false);
+            // productService.updateQuantity(orderDetail.getImportOrderDetail().getProduct().getId(), orderDetail.getQuantity(), false);
         }
         
             

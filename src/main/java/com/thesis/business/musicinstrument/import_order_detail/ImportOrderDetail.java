@@ -2,6 +2,7 @@ package com.thesis.business.musicinstrument.import_order_detail;
 
 import com.thesis.business.musicinstrument.import_order.ImportOrder;
 import com.thesis.business.musicinstrument.order.CustomerOrder;
+import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.product.Product;
 
 import jakarta.persistence.Column;
@@ -41,4 +42,8 @@ public class ImportOrderDetail {
     @ManyToOne
     @JoinColumn(name = "importOder_id")
     private ImportOrder importOrder;
+
+    @ManyToOne
+    @JoinColumn(name = "order_detail")
+    private OrderDetail orderDetail;
 }

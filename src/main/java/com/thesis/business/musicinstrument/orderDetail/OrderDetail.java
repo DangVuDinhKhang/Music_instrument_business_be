@@ -29,10 +29,6 @@ public class OrderDetail {
     private Long total;
 
     @ManyToOne
-    @JoinColumn(name = "import_orderdetail_id")
-    private ImportOrderDetail importOrderDetail;
-
-    @ManyToOne
     @JoinColumn(name = "customerOder_id")
     private CustomerOrder customerOrder;
 
