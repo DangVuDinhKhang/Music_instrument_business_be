@@ -46,8 +46,8 @@ public class OrderDetailResource {
     @Path("/{orderId}")
     public Response findByOrderId(@PathParam("orderId") Long orderId){
         
-        List<OrderDetail> orderDetails = orderDetailService.findByOrderId(orderId);
-        return Response.status(Response.Status.OK).entity(orderDetails).build();
+        List<OrderDetailDto> orderDetailDtos = orderDetailService.findByOrderId(orderId);
+        return Response.status(Response.Status.OK).entity(orderDetailDtos).build();
     }
 
     @DELETE

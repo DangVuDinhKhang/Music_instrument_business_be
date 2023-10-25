@@ -1,5 +1,6 @@
 package com.thesis.business.musicinstrument.orderDetail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
@@ -7,6 +8,9 @@ import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail
 import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.order.CustomerOrderService;
+import com.thesis.business.musicinstrument.order_receipt_link.OrderReceiptLink;
+import com.thesis.business.musicinstrument.order_receipt_link.OrderReceiptLinkService;
+import com.thesis.business.musicinstrument.product.Product;
 import com.thesis.business.musicinstrument.product.ProductService;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -29,6 +33,9 @@ public class OrderDetailService {
     @Inject
     CustomerOrderService customerOrderService;
 
+    @Inject
+    OrderReceiptLinkService orderReceiptLinkService;
+
     @Transactional
     public Long add(OrderDetail orderDetail) {
 
@@ -41,12 +48,19 @@ public class OrderDetailService {
         return orderDetail.getId();
     }
 
-    public List<OrderDetail> findByOrderId(Long orderId) {
+    public List<OrderDetailDto> findByOrderId(Long orderId) {
+
+        List<OrderDetailDto> orderDetailDtos = new ArrayList<>();
 
         List<OrderDetail> orderDetails = orderDetailRepository.list("customerOrder.id", orderId);
         if(orderDetails.isEmpty())
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-        return orderDetails;
+        for(OrderDetail orderDetail : orderDetails) {
+            OrderReceiptLink orderReceiptLink = orderReceiptLinkService.findByOrderDetailId(orderDetail.getId());
+            Product product = productService.findById(orderReceiptLink.getImportOrderDetail().getProduct().getId());
+            orderDetailDtos.add(this.convertEntityIntoDto(orderDetail, product));
+        }
+        return orderDetailDtos;
     }   
 
     public List<OrderDetail> findByProductIdAndListOfOrder(Long productId, List<CustomerOrder> customerOrders){
@@ -90,6 +104,18 @@ public class OrderDetailService {
             return;
         else
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Detail of order does not exist");
+    }
+
+    private OrderDetailDto convertEntityIntoDto(OrderDetail orderDetail, Product product) {
+        
+        OrderDetailDto orderDetailDto = new OrderDetailDto();
+        orderDetailDto.setId(orderDetail.getId());
+        orderDetailDto.setCustomerOrder(orderDetail.getCustomerOrder());
+        orderDetailDto.setProduct(product);
+        orderDetailDto.setQuantity(orderDetail.getQuantity());
+        orderDetailDto.setTotal(orderDetail.getTotal());
+
+        return orderDetailDto;
     }
 
 }

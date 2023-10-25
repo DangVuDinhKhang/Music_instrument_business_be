@@ -12,6 +12,8 @@ import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail
 import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
+import com.thesis.business.musicinstrument.order_receipt_link.OrderReceiptLink;
+import com.thesis.business.musicinstrument.order_receipt_link.OrderReceiptLinkService;
 import com.thesis.business.musicinstrument.payment.PaymentService;
 import com.thesis.business.musicinstrument.product.Product;
 import com.thesis.business.musicinstrument.product.ProductService;
@@ -46,6 +48,9 @@ public class CustomerOrderService {
     @Inject 
     ImportOrderService importOrderService;
 
+    @Inject
+    OrderReceiptLinkService orderReceiptLinkService;
+
     @Transactional
     public Long add(CustomerOrderRequest customerOrderRequest, String username, String role) {
 
@@ -75,43 +80,54 @@ public class CustomerOrderService {
                 customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getId()
             );
             System.out.println(importOrderDetails);
-            for(int j = 0; j < importOrderDetails.size(); j++){
-                if(importOrderDetails.get(j).getSoldQuantity() + orderDetail.getQuantity() <= importOrderDetails.get(j).getQuantity()){
-                    ImportOrder importOrder = importOrderService.findById(importOrderDetails.get(j).getImportOrder().getId());
-                    if(importOrder.getStatus() == 1){
-                        orderDetail.setImportOrderDetail(importOrderDetails.get(j));
-                        break;
+            do {
+                for(int j = 0; j < importOrderDetails.size(); j++){
+                    int addQuantity = orderDetail.getQuantity();
+                    if(missing != 0){
+                        addQuantity = missing;
                     }
-                }
-                else{
-                    System.out.println("Khong du");
-                    Integer tempQuantity = 0;
-                    for(int k = 1; k < orderDetail.getQuantity(); k++){
-                        tempQuantity = orderDetail.getQuantity() - k;
-                        if(importOrderDetails.get(j).getSoldQuantity() + tempQuantity <= importOrderDetails.get(j).getQuantity()){
-                            ImportOrder importOrder = importOrderService.findById(importOrderDetails.get(j).getImportOrder().getId());
-                            if(importOrder.getStatus() == 1){
-                                orderDetail.setImportOrderDetail(importOrderDetails.get(j));
-                                break;
-                            }
-                            missing = k;
+                    if(importOrderDetails.get(j).getSoldQuantity() + addQuantity <= importOrderDetails.get(j).getQuantity()){
+                        ImportOrder importOrder = importOrderService.findById(importOrderDetails.get(j).getImportOrder().getId());
+                        if(importOrder.getStatus() == 1){
+                            OrderReceiptLink orderReceiptLink = new OrderReceiptLink(orderDetail, importOrderDetails.get(j), addQuantity);
+                            orderReceiptLinkService.add(orderReceiptLink);
+                            importOrderDetailService.updateSoldQuantity(orderReceiptLink.getImportOrderDetail().getId(), addQuantity, false);
+                            productService.updateQuantity(orderReceiptLink.getImportOrderDetail().getProduct().getId(), addQuantity, false);
+                            missing = 0;
+                            break;
                         }
                     }
-                }
-            }
-
-            if(missing != 0) {
+                    else{
+                        System.out.println("Khong du");
+                        Integer tempQuantity = 0;
+                        for(int k = 0; k < orderDetail.getQuantity(); k++){
+                            tempQuantity = orderDetail.getQuantity() - k;
+                            if(importOrderDetails.get(j).getSoldQuantity() + tempQuantity <= importOrderDetails.get(j).getQuantity()){
+                                ImportOrder importOrder = importOrderService.findById(importOrderDetails.get(j).getImportOrder().getId());
+                                if(importOrder.getStatus() == 1){
+                                    OrderReceiptLink orderReceiptLink = new OrderReceiptLink(orderDetail, importOrderDetails.get(j), tempQuantity);
+                                    orderReceiptLinkService.add(orderReceiptLink);
+                                    importOrderDetailService.updateSoldQuantity(orderReceiptLink.getImportOrderDetail().getId(), orderReceiptLink.getQuantity(), false);
+                                    productService.updateQuantity(orderReceiptLink.getImportOrderDetail().getProduct().getId(), orderReceiptLink.getQuantity(), false);
+                                    missing = k;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                    }
+                } 
                 
-            }
+            } while(missing != 0);
             
-            // orderDetail.setTotal(
-            //     (long)customerOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
-            //     (long)customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()
-            // );
-            // orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
-            // orderDetailService.add(orderDetail);
-            // importOrderDetailService.updateSoldQuantity(orderDetail.getImportOrderDetail().getId(), orderDetail.getQuantity(), false);
-            // productService.updateQuantity(orderDetail.getImportOrderDetail().getProduct().getId(), orderDetail.getQuantity(), false);
+            
+            orderDetail.setTotal(
+                (long)customerOrderRequest.getProductsInCartDTO().get(i).getQuantity() *
+                (long)customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getPrice()
+            );
+            orderDetail.setCustomerOrder(new CustomerOrder(customerOrder.getId()));
+            orderDetailService.add(orderDetail);
+            
         }
         
             
