@@ -47,6 +47,10 @@ public class ImportOrderDetailService {
         return importOrderDetails;
     }   
 
+    public ImportOrderDetail findOneByProductId(Long productId) {
+        return importOrderDetailRepository.find("product.id = ?1  order by price asc", productId).firstResult();
+    }
+
     public List<ImportOrderDetail> findByProductId(Long productId) {
         return importOrderDetailRepository.find("product.id = ?1  order by price asc", productId).list();
     }

@@ -62,21 +62,21 @@ public class CustomerOrderResource {
         return Response.status(Response.Status.OK).entity(customerOrders).build();
     }
 
-    // @PUT
-    // @Path("/{id}")
-    // @RolesAllowed("admin")
-    // public Response updateById(@PathParam("id") Long id, UpdateCustomerOrderRequest updateCustomerOrderRequest){
-    //     customerOrderService.updateById(id, updateCustomerOrderRequest.getStatus());
-    //     return Response.status(Response.Status.OK).build();
-    // }
+    @PUT
+    @Path("/{id}")
+    @RolesAllowed("admin")
+    public Response updateById(@PathParam("id") Long id, UpdateCustomerOrderRequest updateCustomerOrderRequest){
+        customerOrderService.updateById(id, updateCustomerOrderRequest.getStatus());
+        return Response.status(Response.Status.OK).build();
+    }
 
-    // @PUT
-    // @Path("/cancel/{id}")
-    // @RolesAllowed("member")
-    // public Response cancelById(@PathParam("id") Long id, UpdateCustomerOrderRequest updateCustomerOrderRequest){
-    //     customerOrderService.cancelById(id, updateCustomerOrderRequest.getStatus());
-    //     return Response.status(Response.Status.OK).build();
-    // }
+    @PUT
+    @Path("/cancel/{id}")
+    @RolesAllowed("member")
+    public Response cancelById(@PathParam("id") Long id, UpdateCustomerOrderRequest updateCustomerOrderRequest){
+        customerOrderService.cancelById(id, updateCustomerOrderRequest.getStatus());
+        return Response.status(Response.Status.OK).build();
+    }
 
     @DELETE
     @Path("/{id}")
@@ -114,6 +114,17 @@ public class CustomerOrderResource {
     public Response statisticTotalRevenue() {
 
         Long totalRevenues = customerOrderService.statisticTotalRevenue();
+
+        return Response.status(Response.Status.OK).entity(totalRevenues).build();
+    }
+
+    @GET
+    @Path("/statistic-profit/{id}")
+
+    @RolesAllowed("admin")
+    public Response statisticProfit(@PathParam("id") Long id) {
+
+        Long totalRevenues = customerOrderService.statisticProfit(id);
 
         return Response.status(Response.Status.OK).entity(totalRevenues).build();
     }

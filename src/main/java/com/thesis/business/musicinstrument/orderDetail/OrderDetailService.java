@@ -48,7 +48,7 @@ public class OrderDetailService {
         return orderDetail.getId();
     }
 
-    public List<OrderDetailDto> findByOrderId(Long orderId) {
+    public List<OrderDetailDto> findByOrderIdConvertDto(Long orderId) {
 
         List<OrderDetailDto> orderDetailDtos = new ArrayList<>();
 
@@ -56,11 +56,19 @@ public class OrderDetailService {
         if(orderDetails.isEmpty())
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
         for(OrderDetail orderDetail : orderDetails) {
-            OrderReceiptLink orderReceiptLink = orderReceiptLinkService.findByOrderDetailId(orderDetail.getId());
+            OrderReceiptLink orderReceiptLink = orderReceiptLinkService.findOneByOrderDetailId(orderDetail.getId());
             Product product = productService.findById(orderReceiptLink.getImportOrderDetail().getProduct().getId());
             orderDetailDtos.add(this.convertEntityIntoDto(orderDetail, product));
         }
         return orderDetailDtos;
+    }   
+
+    public List<OrderDetail> findByOrderId(Long orderId) {
+
+        List<OrderDetail> orderDetails = orderDetailRepository.list("customerOrder.id", orderId);
+        if(orderDetails.isEmpty())
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
+        return orderDetails;
     }   
 
     public List<OrderDetail> findByProductIdAndListOfOrder(Long productId, List<CustomerOrder> customerOrders){

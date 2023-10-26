@@ -21,6 +21,7 @@ import com.thesis.business.musicinstrument.product.ProductService;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.criteria.Order;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
@@ -149,41 +150,59 @@ public class CustomerOrderService {
         return customerOrderRepository.list("account.id = ?1 ORDER BY date", accountId);
     }
 
-    // @Transactional
-    // public void updateById(Long id, Integer status) {
+    @Transactional
+    public void updateById(Long id, Integer status) {
 
-    //     CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
-    //     if(customerOrderInDB == null)
-    //         throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-    //     if(customerOrderInDB.getStatus() == -1 && status != -1){
-    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-    //         for(int i = 0; i < orderDetails.size(); i++)
-    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), false);
-    //     }
-    //     customerOrderInDB.setStatus(status);
-    //     customerOrderRepository.persist(customerOrderInDB);
-    //     if(status == -1){
-    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-    //         for(int i = 0; i < orderDetails.size(); i++)
-    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
-    //     }
-    // }
+        CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
+        if(customerOrderInDB == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
+        if(customerOrderInDB.getStatus() == -1 && status != -1){
+            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+            for(int i = 0; i < orderDetails.size(); i++){
+                List<OrderReceiptLink> orderReceiptLinks = orderReceiptLinkService.findAllByOrderDetailId(orderDetails.get(i).getId());
+                Product product = productService.findById(orderReceiptLinks.get(0).getImportOrderDetail().getProduct().getId());
+                productService.updateQuantity(product.getId(), orderDetails.get(i).getQuantity(), false);
+                for(int j = 0; j < orderReceiptLinks.size(); j++)
+                    importOrderDetailService.updateSoldQuantity(orderReceiptLinks.get(j).getImportOrderDetail().getId(), orderReceiptLinks.get(j).getQuantity() , false);
+        
+            }  
+        }
+        customerOrderInDB.setStatus(status);
+        customerOrderRepository.persist(customerOrderInDB);
+        if(status == -1){
+            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+            for(int i = 0; i < orderDetails.size(); i++){
+                List<OrderReceiptLink> orderReceiptLinks = orderReceiptLinkService.findAllByOrderDetailId(orderDetails.get(i).getId());
+                Product product = productService.findById(orderReceiptLinks.get(0).getImportOrderDetail().getProduct().getId());
+                productService.updateQuantity(product.getId(), orderDetails.get(i).getQuantity(), true);
+                for(int j = 0; j < orderReceiptLinks.size(); j++)
+                    importOrderDetailService.updateSoldQuantity(orderReceiptLinks.get(j).getImportOrderDetail().getId(), orderReceiptLinks.get(j).getQuantity() , true);
+        
+            }  
+        }
+    }
 
-    // @Transactional
-    // public void cancelById(Long id, Integer status) {
+    @Transactional
+    public void cancelById(Long id, Integer status) {
 
-    //     CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
-    //     if(customerOrderInDB == null)
-    //         throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
-    //     if(status == -1){
-    //         customerOrderInDB.setStatus(status);
-    //         customerOrderRepository.persist(customerOrderInDB);
+        CustomerOrder customerOrderInDB = customerOrderRepository.findById(id);
+        if(customerOrderInDB == null)
+            throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Order does not exist");
+        if(status == -1){
+            customerOrderInDB.setStatus(status);
+            customerOrderRepository.persist(customerOrderInDB);
 
-    //         List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
-    //         for(int i = 0; i < orderDetails.size(); i++)
-    //             productService.updateQuantity(orderDetails.get(i).getProduct().getId(), orderDetails.get(i).getQuantity(), true);
-    //     }     
-    // }
+            List<OrderDetail> orderDetails = orderDetailService.findByOrderId(customerOrderInDB.getId());
+            for(int i = 0; i < orderDetails.size(); i++){
+                List<OrderReceiptLink> orderReceiptLinks = orderReceiptLinkService.findAllByOrderDetailId(orderDetails.get(i).getId());
+                Product product = productService.findById(orderReceiptLinks.get(0).getImportOrderDetail().getProduct().getId());
+                productService.updateQuantity(product.getId(), orderDetails.get(i).getQuantity(), true);
+                for(int j = 0; j < orderReceiptLinks.size(); j++)
+                    importOrderDetailService.updateSoldQuantity(orderReceiptLinks.get(j).getImportOrderDetail().getId(), orderReceiptLinks.get(j).getQuantity() , true);
+        
+            }  
+        }  
+    }
 
     @Transactional
     public void deleteById(Long id){
@@ -226,5 +245,23 @@ public class CustomerOrderService {
             totalRevenue += customerOrder.getTotal();
         }
         return totalRevenue;
+    }
+
+    public Long statisticProfit(Long id) {
+        CustomerOrder customerOrder = customerOrderRepository.findById(id);
+
+        List<OrderDetail> orderDetails = orderDetailService.findByOrderId(id);
+
+        Integer importPrice = 0;
+
+        for(OrderDetail orderDetail : orderDetails){
+            List<OrderReceiptLink> orderReceiptLinks = orderReceiptLinkService.findAllByOrderDetailId(orderDetail.getId());
+            for(OrderReceiptLink orderReceiptLink : orderReceiptLinks){
+                ImportOrderDetail importOrderDetail = importOrderDetailService.findById(orderReceiptLink.getImportOrderDetail().getId());
+                importPrice += importOrderDetail.getPrice() * orderReceiptLink.getQuantity();
+            }
+        }
+
+        return customerOrder.getTotal() - importPrice;
     }
 }

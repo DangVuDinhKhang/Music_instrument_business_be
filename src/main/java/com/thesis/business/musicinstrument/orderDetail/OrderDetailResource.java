@@ -46,7 +46,7 @@ public class OrderDetailResource {
     @Path("/{orderId}")
     public Response findByOrderId(@PathParam("orderId") Long orderId){
         
-        List<OrderDetailDto> orderDetailDtos = orderDetailService.findByOrderId(orderId);
+        List<OrderDetailDto> orderDetailDtos = orderDetailService.findByOrderIdConvertDto(orderId);
         return Response.status(Response.Status.OK).entity(orderDetailDtos).build();
     }
 
@@ -59,4 +59,5 @@ public class OrderDetailResource {
 
         return Response.status(Response.Status.OK).build();
     }
+
 }

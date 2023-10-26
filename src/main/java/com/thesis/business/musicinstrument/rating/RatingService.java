@@ -1,14 +1,22 @@
 package com.thesis.business.musicinstrument.rating;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
+import com.thesis.business.musicinstrument.account.Account;
 import com.thesis.business.musicinstrument.account.AccountService;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.order.CustomerOrderService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
+import com.thesis.business.musicinstrument.order_receipt_link.OrderReceiptLink;
+import com.thesis.business.musicinstrument.order_receipt_link.OrderReceiptLinkService;
 import com.thesis.business.musicinstrument.product.ProductService;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -34,6 +42,12 @@ public class RatingService {
     @Inject 
     OrderDetailService orderDetailService;
 
+    @Inject
+    OrderReceiptLinkService orderReceiptLinkService;
+
+    @Inject
+    ImportOrderDetailService importOrderDetailService;
+
     @Transactional
     public Long add(Rating rating, String username, String role) {
 
@@ -54,10 +68,35 @@ public class RatingService {
 
     public List<Rating> findByProductId(Long productId) {
 
+        List<Rating> ratings = new ArrayList<>();
+
         if(productService.findById(productId) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
 
-        return ratingRepository.list("orderDetail.product.id", productId);
+        List<ImportOrderDetail> importOrderDetails = importOrderDetailService.findByProductId(productId);
+        List<OrderReceiptLink> orderReceiptLinks = new ArrayList<>();
+        for(ImportOrderDetail importOrderDetail : importOrderDetails){
+            List<OrderReceiptLink> tempOrderReceiptLinks = orderReceiptLinkService.findAllByImportOrderDetailId(importOrderDetail.getId());
+            for(int i = 0; i < tempOrderReceiptLinks.size(); i++){
+                orderReceiptLinks.add(tempOrderReceiptLinks.get(i));
+            }
+        }
+
+        Set<Long> tempSet = new HashSet<>();
+        List<OrderReceiptLink> newOrderReceiptLinks = new ArrayList<>();
+        for (OrderReceiptLink orderReceiptLink : orderReceiptLinks) {
+            if (tempSet.add(orderReceiptLink.getOrderDetail().getId())) {
+                newOrderReceiptLinks.add(orderReceiptLink);
+            }
+        }
+
+        for(OrderReceiptLink newOrderReceiptLink : newOrderReceiptLinks){
+            OrderDetail orderDetail = orderDetailService.findById(newOrderReceiptLink.getOrderDetail().getId());
+            ratings.add(ratingRepository.find("orderDetail.id", orderDetail.getId()).firstResult());
+        }
+        
+
+        return ratings;
     }
 
     public List<Rating> findByAccountId(Long accountId, String username, String role) {
