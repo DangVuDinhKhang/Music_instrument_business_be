@@ -39,14 +39,13 @@ public class AccountResource {
     @Path("/login")
     public Response login(Account account) {
         AccountDTO accountDTO = accountService.login(account);
-        
+
         return Response.status(Response.Status.OK).entity(accountDTO).build();
     }
 
-    
     @GET
     @Path("/{id}")
-    @RolesAllowed({"admin", "member"})
+    @RolesAllowed({ "admin", "member" })
     public Response findById(@PathParam("id") Long id) {
         Account account = accountService.findById(id, jwt.getName(), jwt.getGroups().stream().findFirst().orElse(null));
         return Response.status(Response.Status.OK).entity(account).build();
@@ -69,18 +68,19 @@ public class AccountResource {
     }
 
     @PUT
+    @Path("/update-status/{id}")
+    @RolesAllowed({"admin"})
+    public Response deleteById(@PathParam("id") Long id) {
+        accountService.updateStatusById(id);
+        return Response.status(Response.Status.OK).build();
+    }
+
+    @PUT
     @Path("/{id}")
-    @RolesAllowed({"admin", "member"})
+    @RolesAllowed({ "admin", "member" })
     public Response updateById(@PathParam("id") Long id, Account account) {
         accountService.updateById(id, account, jwt.getName(), jwt.getGroups().stream().findFirst().orElse(null));
         return Response.status(Response.Status.OK).build();
     }
 
-    @DELETE
-    @Path("/{id}")
-    @RolesAllowed("admin")
-    public Response deleteById(@PathParam("id") Long id) {
-        accountService.deleteById(id);
-        return Response.status(Response.Status.OK).build();
-    }
 }
