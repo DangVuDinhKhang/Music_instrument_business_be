@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.import_order.ImportOrderService;
-import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
 import com.thesis.business.musicinstrument.product.ProductService;
 
 import jakarta.enterprise.context.RequestScoped;

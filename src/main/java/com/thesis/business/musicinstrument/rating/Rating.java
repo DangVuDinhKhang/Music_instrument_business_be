@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 import com.thesis.business.musicinstrument.account.Account;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
-import com.thesis.business.musicinstrument.product.Product;
 
 import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
