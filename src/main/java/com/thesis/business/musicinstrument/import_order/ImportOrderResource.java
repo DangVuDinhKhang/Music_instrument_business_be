@@ -4,17 +4,11 @@ import java.net.URI;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.glassfish.jaxb.runtime.v2.schemagen.xmlschema.Import;
-
-import com.thesis.business.musicinstrument.order.CustomerOrder;
-import com.thesis.business.musicinstrument.order.CustomerOrderRequest;
-import com.thesis.business.musicinstrument.order.CustomerOrderService;
 import com.thesis.business.musicinstrument.order.UpdateCustomerOrderRequest;
 
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;

@@ -4,10 +4,7 @@ import java.util.List;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.import_order.ImportOrderService;
-import com.thesis.business.musicinstrument.order.CustomerOrder;
-import com.thesis.business.musicinstrument.order.CustomerOrderService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
-import com.thesis.business.musicinstrument.orderDetail.OrderDetailRepository;
 import com.thesis.business.musicinstrument.product.ProductService;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -64,6 +61,11 @@ public class ImportOrderDetailService {
             importOrderDetail.setSoldQuantity(importOrderDetail.getSoldQuantity() + hasPurchasedQuantity);
 
         importOrderDetailRepository.persist(importOrderDetail);
+    }
+
+    public List<ImportOrderDetail> findTopThreeProducts(){
+        return importOrderDetailRepository.find("SELECT product.id, SUM(soldQuantity) as total_sold " + 
+        "FROM ImportOrderDetail " + "GROUP BY product.id " + "ORDER BY total_sold DESC").list();
     }
 
     // public OrderDetail findByProductIdAndListOfOrder(Long productId, List<CustomerOrder> customerOrders){

@@ -1,24 +1,20 @@
 package com.thesis.business.musicinstrument.product;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
-import com.thesis.business.musicinstrument.cart.Cart;
 import com.thesis.business.musicinstrument.cart.CartService;
-import com.thesis.business.musicinstrument.cart_product.CartProduct;
 import com.thesis.business.musicinstrument.cart_product.CartProductService;
 import com.thesis.business.musicinstrument.category.Category;
 import com.thesis.business.musicinstrument.category.CategoryService;
 import com.thesis.business.musicinstrument.image.ImageService;
-import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -50,6 +46,9 @@ public class ProductService {
 
     @Inject
     OrderDetailService orderDetailService;
+
+    @Inject
+    ImportOrderDetailService importOrderDetailService;
 
     @Transactional
     public Long add(MultipartFormDataInput input) {
@@ -142,11 +141,10 @@ public class ProductService {
         return productRepository.find("name ILIKE ?1", "%" + word + "%").list();
     }
 
-    public List<OrderDetail> findPopular() {
+    public List<ImportOrderDetail> findPopular() {
 
-        return orderDetailService.findTopThreeProducts();
+        return importOrderDetailService.findTopThreeProducts();
         
-        //return productRepository.listAll();
     }
 
     public Product findById(Long id){

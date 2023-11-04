@@ -18,10 +18,8 @@ import com.thesis.business.musicinstrument.payment.PaymentService;
 import com.thesis.business.musicinstrument.product.Product;
 import com.thesis.business.musicinstrument.product.ProductService;
 
-import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.criteria.Order;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 

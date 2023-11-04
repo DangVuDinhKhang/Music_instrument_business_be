@@ -1,7 +1,6 @@
 package com.thesis.business.musicinstrument.import_order_detail;
 
 import com.thesis.business.musicinstrument.import_order.ImportOrder;
-import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.product.Product;
 
 import jakarta.persistence.Column;

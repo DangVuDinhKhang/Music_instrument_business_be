@@ -1,14 +1,7 @@
 package com.thesis.business.musicinstrument.order_receipt_link;
-
-import java.time.LocalDate;
-
-import com.thesis.business.musicinstrument.account.Account;
 import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
-import com.thesis.business.musicinstrument.payment.Payment;
 
-import jakarta.json.bind.annotation.JsonbDateFormat;
-//import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

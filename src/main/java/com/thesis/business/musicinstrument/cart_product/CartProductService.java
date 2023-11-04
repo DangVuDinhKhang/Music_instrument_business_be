@@ -10,7 +10,6 @@ import com.thesis.business.musicinstrument.product.Product;
 import com.thesis.business.musicinstrument.product.ProductInCartDTO;
 import com.thesis.business.musicinstrument.product.ProductService;
 
-import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
