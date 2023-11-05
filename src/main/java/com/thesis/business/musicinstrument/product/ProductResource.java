@@ -19,6 +19,7 @@ import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
@@ -49,9 +50,9 @@ public class ProductResource {
 
     @GET
     @Path("/")
-    public Response findAll(){
+    public Response findAll(@QueryParam("page") Integer page, @QueryParam("pageSize") Integer pageSize){
         
-        List<Product> products = productService.findAll();
+        List<Product> products = productService.findAll(page, pageSize);
         return Response.status(Response.Status.OK).entity(products).build();
     }
 

@@ -17,6 +17,7 @@ import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail
 import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 
+import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -131,9 +132,14 @@ public class ProductService {
     //     return productDTOs;
     // }
 
-    public List<Product> findAll() {
+    public List<Product> findAll(Integer page, Integer pageSize) {
 
-        return productRepository.listAll();
+        if(page == null || pageSize == null) {
+            page = 0;
+            pageSize = 6;
+        }
+
+        return productRepository.findAll(Sort.by("name")).page(page, pageSize).list();
     }
 
     public List<Product> findByWord(String word) {
