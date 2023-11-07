@@ -91,7 +91,13 @@ public class RatingService {
 
         for(OrderReceiptLink newOrderReceiptLink : newOrderReceiptLinks){
             OrderDetail orderDetail = orderDetailService.findById(newOrderReceiptLink.getOrderDetail().getId());
-            ratings.add(ratingRepository.find("orderDetail.id", orderDetail.getId()).firstResult());
+            CustomerOrder customerOrder = customerOrderService.findById(orderDetail.getCustomerOrder().getId());
+            if(customerOrder.getStatus() == 2){
+                Rating rating = ratingRepository.find("orderDetail.id", orderDetail.getId()).firstResult();
+                if(rating != null){
+                    ratings.add(rating);
+                }
+            }
         }
         
 
