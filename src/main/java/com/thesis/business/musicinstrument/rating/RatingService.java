@@ -38,7 +38,7 @@ public class RatingService {
     @Inject
     CustomerOrderService customerOrderService;
 
-    @Inject 
+    @Inject
     OrderDetailService orderDetailService;
 
     @Inject
@@ -50,15 +50,17 @@ public class RatingService {
     @Transactional
     public Long add(Rating rating, String username, String role) {
 
-        if(rating.getStar() < 0 || rating.getStar() > 5)
-            throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Star must greater than 0 and lower than 5");
-        if(accountService.findById(rating.getAccount().getId(), username, role) == null)
+        if (rating.getStar() < 0 || rating.getStar() > 5)
+            throw new MusicInstrumentException(Response.Status.BAD_REQUEST,
+                    "Star must greater than 0 and lower than 5");
+        if (accountService.findById(rating.getAccount().getId(), username, role) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
 
         OrderDetail orderDetail = orderDetailService.findById(rating.getOrderDetail().getId());
         CustomerOrder customerOrder = customerOrderService.findById(orderDetail.getCustomerOrder().getId());
-        if(customerOrder.getStatus() != 2)
-            throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "You must purchase this product before rating");
+        if (customerOrder.getStatus() != 2)
+            throw new MusicInstrumentException(Response.Status.BAD_REQUEST,
+                    "You must purchase this product before rating");
 
         rating.setDate(LocalDate.now());
         ratingRepository.persist(rating);
@@ -69,14 +71,15 @@ public class RatingService {
 
         List<Rating> ratings = new ArrayList<>();
 
-        if(productService.findById(productId) == null)
+        if (productService.findById(productId) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Product does not exist");
 
         List<ImportOrderDetail> importOrderDetails = importOrderDetailService.findByProductId(productId);
         List<OrderReceiptLink> orderReceiptLinks = new ArrayList<>();
-        for(ImportOrderDetail importOrderDetail : importOrderDetails){
-            List<OrderReceiptLink> tempOrderReceiptLinks = orderReceiptLinkService.findAllByImportOrderDetailId(importOrderDetail.getId());
-            for(int i = 0; i < tempOrderReceiptLinks.size(); i++){
+        for (ImportOrderDetail importOrderDetail : importOrderDetails) {
+            List<OrderReceiptLink> tempOrderReceiptLinks = orderReceiptLinkService
+                    .findAllByImportOrderDetailId(importOrderDetail.getId());
+            for (int i = 0; i < tempOrderReceiptLinks.size(); i++) {
                 orderReceiptLinks.add(tempOrderReceiptLinks.get(i));
             }
         }
@@ -89,43 +92,40 @@ public class RatingService {
             }
         }
 
-        for(OrderReceiptLink newOrderReceiptLink : newOrderReceiptLinks){
+        for (OrderReceiptLink newOrderReceiptLink : newOrderReceiptLinks) {
             OrderDetail orderDetail = orderDetailService.findById(newOrderReceiptLink.getOrderDetail().getId());
             CustomerOrder customerOrder = customerOrderService.findById(orderDetail.getCustomerOrder().getId());
-            if(customerOrder.getStatus() == 2){
+            if (customerOrder.getStatus() == 2) {
                 Rating rating = ratingRepository.find("orderDetail.id", orderDetail.getId()).firstResult();
-                if(rating != null){
+                if (rating != null) {
                     ratings.add(rating);
                 }
             }
         }
-        
 
         return ratings;
     }
 
     public List<Rating> findByAccountId(Long accountId, String username, String role) {
 
-        if(accountService.findById(accountId, username, role) == null)
+        if (accountService.findById(accountId, username, role) == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
 
         return ratingRepository.list("account.id", accountId);
     }
-    
 
-    public Rating findById(Long id){
+    public Rating findById(Long id) {
         return ratingRepository.findById(id);
     }
 
-    public Long statistic(){
+    public Long statistic() {
         return ratingRepository.count();
     }
 
-
     @Transactional
-    public void deleteById(Long id){
-        
-        if(ratingRepository.deleteById(id))
+    public void deleteById(Long id) {
+
+        if (ratingRepository.deleteById(id))
             return;
         else
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Rating does not exist");
