@@ -109,9 +109,10 @@ public class AccountService {
         // else
         //     throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
         Account accountInDB;
-        accountInDB = accountRepository.find("id = ?1", id).firstResult();
+        accountInDB = accountRepository.find("id = ?1 and role <> ?2", id, "admin").firstResult();
         if(accountInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
+        System.out.println(accountInDB.getUsername());
         Integer status;
         if(accountInDB.getStatus() == 0)
             status = 1;

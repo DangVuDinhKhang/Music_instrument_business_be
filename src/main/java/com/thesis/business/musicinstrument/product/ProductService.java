@@ -134,11 +134,15 @@ public class ProductService {
 
     public List<Product> findAll(Integer page, Integer pageSize) {
 
+        if(page == 0 && pageSize == 0) {
+            return productRepository.listAll();
+        }
+
         if(page == null || pageSize == null) {
             page = 0;
             pageSize = 6;
         }
-
+     
         return productRepository.findAll(Sort.by("name")).page(page, pageSize).list();
     }
 
