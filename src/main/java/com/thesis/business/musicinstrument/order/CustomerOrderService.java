@@ -78,7 +78,6 @@ public class CustomerOrderService {
             List<ImportOrderDetail> importOrderDetails = importOrderDetailService.findByProductId(
                 customerOrderRequest.getProductsInCartDTO().get(i).getProduct().getId()
             );
-            System.out.println(importOrderDetails);
             do {
                 for(int j = 0; j < importOrderDetails.size(); j++){
                     int addQuantity = orderDetail.getQuantity();
