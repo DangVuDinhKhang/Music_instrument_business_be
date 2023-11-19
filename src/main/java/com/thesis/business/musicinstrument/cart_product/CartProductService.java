@@ -41,7 +41,10 @@ public class CartProductService {
             cartProduct.setQuantity(1);
         }
         else{
-            cartProduct.setQuantity(cartProduct.getQuantity() + 1);
+            if(cartProduct.getQuantity() < product.getQuantity())
+                cartProduct.setQuantity(cartProduct.getQuantity() + 1);
+            else
+                throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Sold out");
         }
         cartProductRepository.persist(cartProduct);
 
