@@ -84,7 +84,7 @@ public class CustomerOrderService {
         //long amount = Integer.parseInt(req.getParameter("amount"))*100;
         long amount = total * 100;
         //String bankCode = req.getParameter("bankCode");
-        String bankCode = "NCB";
+        String bankCode = "";
         
         // String vnp_TxnRef = Config.getRandomNumber(8);
         String vnp_TxnRef = String.valueOf(customerOrderId);
