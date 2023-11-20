@@ -1,7 +1,10 @@
 package com.thesis.business.musicinstrument.product;
 
 import java.io.IOException;
+import java.text.Collator;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -143,7 +146,11 @@ public class ProductService {
             pageSize = 6;
         }
      
-        return productRepository.findAll(Sort.by("name")).page(page, pageSize).list();
+        // List<Product> products = productRepository.findAll(Sort.by("name")).page(page, pageSize).list();
+        // Collections.sort(products, new VietnameseProductNameComparator());
+
+        // return products;
+        return productRepository.getProductsOrderedByName(page, pageSize);
     }
 
     public List<Product> findByWord(String word) {
@@ -298,6 +305,15 @@ public class ProductService {
     @Transactional
     public void removeFromCart(Long productId, Long cartId){
         cartProductService.removeProductFromCart(productId, cartId);
+    }
+
+    class VietnameseProductNameComparator implements java.util.Comparator<Product> {
+        private Collator collator = Collator.getInstance(new Locale("vi", "VN"));
+
+        @Override
+        public int compare(Product p1, Product p2) {
+            return collator.compare(p1.getName(), p2.getName());
+        }
     }
 
     // @Transactional
