@@ -291,8 +291,8 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateInCart(Long productId, Long cartId){
-        cartProductService.updateProductInCart(productId, cartId);
+    public void updateInCart(Long productId, Long cartId, Integer quantity){
+        cartProductService.updateProductInCart(productId, cartId, quantity);
     }
 
     @Transactional

@@ -82,7 +82,7 @@ public class ProductResource {
     @PUT
     @Path("/update-in-cart/")
     public Response updateInCart(AddToCartRequest addToCartRequest){
-        productService.updateInCart(addToCartRequest.getProductId(), addToCartRequest.getCartId());
+        productService.updateInCart(addToCartRequest.getProductId(), addToCartRequest.getCartId(), addToCartRequest.getQuantity());
         return Response.status(Response.Status.OK).build();
     }
 
