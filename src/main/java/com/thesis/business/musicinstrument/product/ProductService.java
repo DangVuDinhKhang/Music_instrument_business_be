@@ -2,7 +2,6 @@ package com.thesis.business.musicinstrument.product;
 
 import java.io.IOException;
 import java.text.Collator;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -20,7 +19,6 @@ import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail
 import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 
-import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

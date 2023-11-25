@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
-import com.thesis.business.musicinstrument.account.Account;
 import com.thesis.business.musicinstrument.account.AccountService;
 import com.thesis.business.musicinstrument.import_order.ImportOrder;
 import com.thesis.business.musicinstrument.import_order.ImportOrderService;
@@ -27,28 +26,17 @@ import com.thesis.business.musicinstrument.payment.PaymentService;
 import com.thesis.business.musicinstrument.product.Product;
 import com.thesis.business.musicinstrument.product.ProductService;
 
-import io.vertx.core.json.JsonObject;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 
 
-import java.io.IOException;import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
+import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-import java.util.TimeZone;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 @RequestScoped
 public class CustomerOrderService {
