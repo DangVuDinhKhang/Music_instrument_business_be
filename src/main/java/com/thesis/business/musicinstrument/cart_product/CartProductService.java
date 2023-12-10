@@ -74,6 +74,9 @@ public class CartProductService {
                 cartProduct.setQuantity(quantity);
                 cartProductRepository.persist(cartProduct);
             }
+            else{
+                throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Out of stock");
+            }
         }
         
 
