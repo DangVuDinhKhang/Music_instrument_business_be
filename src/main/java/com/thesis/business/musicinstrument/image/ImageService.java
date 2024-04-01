@@ -31,22 +31,22 @@ public class ImageService {
     @Inject
     ImageRepository imageRepository;
 
-    public void add(String path, Product product){
+    public void add(String path, Product product) {
         Image image = new Image();
         image.setPath(path);
         image.setProduct(product);
         imageRepository.persist(image);
     }
 
-    public void deleteByProductId(Long productId){
+    public void deleteByProductId(Long productId) {
         imageRepository.delete("product.id", productId);
     }
 
-    public List<Image> getAll(){
+    public List<Image> getAll() {
         return imageRepository.listAll();
     }
 
-    public List<Image> getByProductId(Long id){
+    public List<Image> getByProductId(Long id) {
         return imageRepository.find("product.id", id).list();
     }
 
@@ -54,7 +54,7 @@ public class ImageService {
         Map<String, List<InputPart>> uploadForm = input.getFormDataMap();
         List<String> fileNames = new ArrayList<>();
         List<InputPart> inputParts = uploadForm.get("file");
-        if(!inputParts.isEmpty()){
+        if (!inputParts.isEmpty()) {
             String fileName = null;
             deleteByProductId(product.getId());
             for (InputPart inputPart : inputParts) {
@@ -73,17 +73,18 @@ public class ImageService {
         return "";
     }
 
-    private void writeFile(InputStream inputStream, String fileName, Product product)throws IOException {
-        
+    private void writeFile(InputStream inputStream, String fileName, Product product) throws IOException {
+
         byte[] bytes = IOUtils.toByteArray(inputStream);
         File customDir = new File(UPLOAD_DIR);
-        fileName = customDir.getAbsolutePath() + File.separator + (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000) + fileName;
+        fileName = customDir.getAbsolutePath() + File.separator
+                + (LocalDateTime.now().toEpochSecond(ZoneOffset.UTC) * 1000) + fileName;
         Files.write(Paths.get(fileName), bytes, StandardOpenOption.CREATE_NEW);
         add(fileName, product);
     }
 
     private String getFileName(MultivaluedMap<String, String> header) {
-        
+
         String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
         for (String filename : contentDisposition) {
             if ((filename.trim().startsWith("filename"))) {

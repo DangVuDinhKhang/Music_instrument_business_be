@@ -1,5 +1,6 @@
 package com.thesis.business.musicinstrument.account;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -37,6 +38,7 @@ public class AccountResource {
     @POST
     @Path("/login")
     public Response login(Account account) {
+        LocalDateTime a = LocalDateTime.now();
         AccountDTO accountDTO = accountService.login(account);
 
         return Response.status(Response.Status.OK).entity(accountDTO).build();
