@@ -1,7 +1,6 @@
 package com.thesis.business.musicinstrument.import_order_detail;
 
 import com.thesis.business.musicinstrument.import_order.ImportOrder;
-import com.thesis.business.musicinstrument.order.CustomerOrder;
 import com.thesis.business.musicinstrument.product.Product;
 
 import jakarta.persistence.Column;
@@ -24,6 +23,9 @@ public class ImportOrderDetail {
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "sold_quantity")
+    private Integer soldQuantity;
 
     @Column(name = "price")
     private Integer price;

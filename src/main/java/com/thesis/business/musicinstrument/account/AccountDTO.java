@@ -23,5 +23,7 @@ public class AccountDTO {
 
     private String token;
 
+    private Integer status;
+
     private Cart cart;
 }

@@ -5,5 +5,6 @@ import jakarta.enterprise.context.RequestScoped;
 
 @RequestScoped
 public class OrderDetailRepository implements PanacheRepository<OrderDetail> {
+
     
 }

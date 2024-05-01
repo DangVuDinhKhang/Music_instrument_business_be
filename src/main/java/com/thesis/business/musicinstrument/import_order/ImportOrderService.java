@@ -8,12 +8,6 @@ import com.thesis.business.musicinstrument.MusicInstrumentException;
 import com.thesis.business.musicinstrument.account.AccountService;
 import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail;
 import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
-import com.thesis.business.musicinstrument.order.CustomerOrder;
-import com.thesis.business.musicinstrument.order.CustomerOrderRepository;
-import com.thesis.business.musicinstrument.order.CustomerOrderRequest;
-import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
-import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
-import com.thesis.business.musicinstrument.payment.PaymentService;
 import com.thesis.business.musicinstrument.product.Product;
 import com.thesis.business.musicinstrument.product.ProductService;
 import com.thesis.business.musicinstrument.supplier.SupplierService;
@@ -62,6 +56,7 @@ public class ImportOrderService {
             ImportOrderDetail importOrderDetail = new ImportOrderDetail();
             importOrderDetail.setProduct(new Product(importOrderRequest.getProducts().get(i).getId()));
             importOrderDetail.setQuantity(importOrderRequest.getProducts().get(i).getQuantity());
+            importOrderDetail.setSoldQuantity(0);
             importOrderDetail.setPrice(importOrderRequest.getProducts().get(i).getPrice());
             importOrderDetail.setTotal(
                 (long)importOrderRequest.getProducts().get(i).getQuantity() *

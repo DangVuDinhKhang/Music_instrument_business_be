@@ -1,7 +1,6 @@
 package com.thesis.business.musicinstrument.orderDetail;
 
 import com.thesis.business.musicinstrument.order.CustomerOrder;
-import com.thesis.business.musicinstrument.product.Product;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,11 +28,7 @@ public class OrderDetail {
     private Long total;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    @ManyToOne
-    @JoinColumn(name = "customerOder_id")
+    @JoinColumn(name = "customerOrder_id")
     private CustomerOrder customerOrder;
 
 }

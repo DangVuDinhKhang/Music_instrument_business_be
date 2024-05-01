@@ -32,5 +32,8 @@ public class Account {
     @Column(name = "phone", nullable = true, length = 10)
     private String phone;
 
+    @Column(name = "status", nullable = false)
+    private Integer status;
+
     
 }

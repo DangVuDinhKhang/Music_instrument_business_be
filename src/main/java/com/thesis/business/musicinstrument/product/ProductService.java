@@ -1,24 +1,22 @@
 package com.thesis.business.musicinstrument.product;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.text.Collator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.thesis.business.musicinstrument.MusicInstrumentException;
-import com.thesis.business.musicinstrument.cart.Cart;
 import com.thesis.business.musicinstrument.cart.CartService;
-import com.thesis.business.musicinstrument.cart_product.CartProduct;
 import com.thesis.business.musicinstrument.cart_product.CartProductService;
 import com.thesis.business.musicinstrument.category.Category;
 import com.thesis.business.musicinstrument.category.CategoryService;
 import com.thesis.business.musicinstrument.image.ImageService;
-import com.thesis.business.musicinstrument.orderDetail.OrderDetail;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetail;
+import com.thesis.business.musicinstrument.import_order_detail.ImportOrderDetailService;
 import com.thesis.business.musicinstrument.orderDetail.OrderDetailService;
 
 import jakarta.enterprise.context.RequestScoped;
@@ -50,6 +48,9 @@ public class ProductService {
 
     @Inject
     OrderDetailService orderDetailService;
+
+    @Inject
+    ImportOrderDetailService importOrderDetailService;
 
     @Transactional
     public Long add(MultipartFormDataInput input) {
@@ -132,9 +133,22 @@ public class ProductService {
     //     return productDTOs;
     // }
 
-    public List<Product> findAll() {
+    public List<Product> findAll(Integer page, Integer pageSize) {
 
-        return productRepository.listAll();
+        if(page == 0 && pageSize == 0) {
+            return productRepository.listAll();
+        }
+
+        if(page == null || pageSize == null) {
+            page = 0;
+            pageSize = 6;
+        }
+     
+        // List<Product> products = productRepository.findAll(Sort.by("name")).page(page, pageSize).list();
+        // Collections.sort(products, new VietnameseProductNameComparator());
+
+        // return products;
+        return productRepository.getProductsOrderedByName(page, pageSize);
     }
 
     public List<Product> findByWord(String word) {
@@ -142,11 +156,10 @@ public class ProductService {
         return productRepository.find("name ILIKE ?1", "%" + word + "%").list();
     }
 
-    public List<OrderDetail> findPopular() {
+    public List<ImportOrderDetail> findPopular() {
 
-        return orderDetailService.findTopThreeProducts();
+        return importOrderDetailService.findTopThreeProducts();
         
-        //return productRepository.listAll();
     }
 
     public Product findById(Long id){
@@ -264,8 +277,7 @@ public class ProductService {
     }
 
     @Transactional
-    public void deleteById(Long id){
-        
+    public void deleteById(Long id){  
         imageService.deleteByProductId(id);
         if(productRepository.deleteById(id))
             return;
@@ -283,13 +295,22 @@ public class ProductService {
     }
 
     @Transactional
-    public void updateInCart(Long productId, Long cartId){
-        cartProductService.updateProductInCart(productId, cartId);
+    public void updateInCart(Long productId, Long cartId, Integer quantity){
+        cartProductService.updateProductInCart(productId, cartId, quantity);
     }
 
     @Transactional
     public void removeFromCart(Long productId, Long cartId){
         cartProductService.removeProductFromCart(productId, cartId);
+    }
+
+    class VietnameseProductNameComparator implements java.util.Comparator<Product> {
+        private Collator collator = Collator.getInstance(new Locale("vi", "VN"));
+
+        @Override
+        public int compare(Product p1, Product p2) {
+            return collator.compare(p1.getName(), p2.getName());
+        }
     }
 
     // @Transactional

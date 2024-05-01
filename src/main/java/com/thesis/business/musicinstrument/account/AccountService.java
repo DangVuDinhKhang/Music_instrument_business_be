@@ -32,6 +32,7 @@ public class AccountService {
         String hashedPassword = BCrypt.hashpw(account.getPassword(), BCrypt.gensalt());
         account.setPassword(hashedPassword);
         account.setRole("member");
+        account.setStatus(1);
 
         this.validateExistedUsername(account);
 
@@ -47,7 +48,7 @@ public class AccountService {
 
         Account accountInDB = accountRepository.find("username", account.getUsername()).firstResult();
 
-        if (accountInDB != null && BCrypt.checkpw(account.getPassword(), accountInDB.getPassword())){
+        if (accountInDB != null && BCrypt.checkpw(account.getPassword(), accountInDB.getPassword()) && accountInDB.getStatus() != 0){
             String token = authService.generateJWTToken(accountInDB.getUsername(), accountInDB.getRole());
             Cart cart = cartService.findByAccountId(accountInDB.getId());
             return this.convertToDTO(accountInDB, cart, token);
@@ -98,15 +99,27 @@ public class AccountService {
     }
 
     @Transactional
-    public void deleteById(Long id){
+    public void updateStatusById(Long id){
 
-        Cart cart = cartService.findByAccountId(id);
-        cartService.deleteByID(cart.getId());
+        // Cart cart = cartService.findByAccountId(id);
+        // cartService.deleteByID(cart.getId());
         
-        if(accountRepository.deleteById(id))
-            return;
-        else
+        // if(accountRepository.deleteById(id))
+        //     return;
+        // else
+        //     throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
+        Account accountInDB;
+        accountInDB = accountRepository.find("id = ?1 and role <> ?2", id, "admin").firstResult();
+        if(accountInDB == null)
             throw new MusicInstrumentException(Response.Status.NOT_FOUND, "Account does not exist");
+        System.out.println(accountInDB.getUsername());
+        Integer status;
+        if(accountInDB.getStatus() == 0)
+            status = 1;
+        else
+            status = 0;
+        accountInDB.setStatus(status);
+
     }
 
     public Long statisticMember(){
@@ -130,6 +143,7 @@ public class AccountService {
         accountDTO.setRole(account.getRole());
         accountDTO.setCart(cart);
         accountDTO.setToken(token);
+        accountDTO.setStatus(account.getStatus());
         return accountDTO;
     }
 

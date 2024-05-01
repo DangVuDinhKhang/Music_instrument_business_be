@@ -10,7 +10,6 @@ import com.thesis.business.musicinstrument.product.Product;
 import com.thesis.business.musicinstrument.product.ProductInCartDTO;
 import com.thesis.business.musicinstrument.product.ProductService;
 
-import jakarta.ejb.CreateException;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -41,26 +40,45 @@ public class CartProductService {
             cartProduct.setCart(cart);
             cartProduct.setQuantity(1);
         }
-        else{
-            cartProduct.setQuantity(cartProduct.getQuantity() + 1);
+        else {
+            if(cartProduct.getQuantity() < product.getQuantity())
+                cartProduct.setQuantity(cartProduct.getQuantity() + 1);
+            else
+                throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Sold out");
         }
         cartProductRepository.persist(cartProduct);
 
     }
 
     @Transactional
-    public void updateProductInCart(Long productId, Long cartId){
+    public void updateProductInCart(Long productId, Long cartId, Integer quantity){
 
         CartProduct cartProduct = findByProductIdAndCartId(productId, cartId);
+        Product product = productService.findById(productId);
         if(cartProduct == null){
             throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Product or cart does not exist");
         }
-        if(cartProduct.getQuantity() - 1 > 0){
-            cartProduct.setQuantity(cartProduct.getQuantity() - 1);
-            cartProductRepository.persist(cartProduct);
+        if(quantity == 1){
+            System.out.println("Davao1");
+            if(cartProduct.getQuantity() - 1 > 0){
+                cartProduct.setQuantity(cartProduct.getQuantity() - 1);
+                cartProductRepository.persist(cartProduct);
+            }
+            else{
+                cartProductRepository.deleteById(cartProduct.getId());
+            }
         }
-        else
-            cartProductRepository.deleteById(cartProduct.getId());
+        else{
+            System.out.println("davao2");
+            if(quantity <= product.getQuantity()){
+                cartProduct.setQuantity(quantity);
+                cartProductRepository.persist(cartProduct);
+            }
+            else{
+                throw new MusicInstrumentException(Response.Status.BAD_REQUEST, "Out of stock");
+            }
+        }
+        
 
     }
 

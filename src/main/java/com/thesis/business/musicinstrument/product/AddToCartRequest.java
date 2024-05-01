@@ -12,4 +12,6 @@ public class AddToCartRequest {
     private Long productId;
     
     private Long cartId;
+
+    private Integer quantity;
 }

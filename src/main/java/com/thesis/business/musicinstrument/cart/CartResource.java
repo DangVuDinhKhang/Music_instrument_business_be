@@ -1,6 +1,5 @@
 package com.thesis.business.musicinstrument.cart;
 
-import java.net.URI;
 import java.util.List;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
@@ -10,10 +9,8 @@ import com.thesis.business.musicinstrument.account.Account;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
