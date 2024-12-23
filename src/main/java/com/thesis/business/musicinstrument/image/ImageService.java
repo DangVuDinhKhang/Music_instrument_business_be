@@ -26,7 +26,7 @@ import com.thesis.business.musicinstrument.product.Product;
 @Singleton
 public class ImageService {
 
-    String UPLOAD_DIR = "C:\\Users\\PC\\Desktop\\programing\\luanvan\\music-instrument-frontend\\src\\assets\\image";
+    String UPLOAD_DIR = "D:\\Karem\\FSB\\thuc_tap_tot_nghiep\\finalProject\\music-instrument-frontend\\src\\assets\\image";
 
     @Inject
     ImageRepository imageRepository;
